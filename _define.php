@@ -1,24 +1,27 @@
 <?php
 /**
- * @brief noodles, a  for Dotclear 2
+ * @brief noodles, a plugin for Dotclear 2
  * 
  * @package Dotclear
- * @subpackage \u
+ * @subpackage Plugin
  * 
- * @author JC Denis
+ * @author Jean-Christian Denis and contributors
  * 
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
 
-if (!defined('DC_RC_PATH')){return;}
-
 $this->registerModule(
-    /* Name */            "Noodles",
-    /* Description*/        "Add users gravatars everywhere",
-    /* Author */            "JC Denis",
-    /* Version */            '0.6.1',
-    /* Permissions */        'admin'
-    //* Priority */        10000000
+    'Noodles',
+    'Add users gravatars everywhere',
+    'Jean-Christian Denis and contributors',
+    '0.6.1',
+    [
+        'requires' => [['core', '2.19']],
+        'permissions' => 'admin',
+        'type' => 'plugin',
+        'support' => 'https://github.com/JcDenis/noodles',
+        'details' => 'http://plugins.dotaddict.org/dc2/details/noodles',
+        'repository' => 'https://raw.githubusercontent.com/JcDenis/noodles/master/dcstore.xml'
+    ]
 );
-    /* date */        #20100705
