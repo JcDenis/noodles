@@ -79,5 +79,3 @@ $GLOBALS['__l10n']['gravatar.com default image'] = 'Image par défaut de gravata
 
 #index.php:321
 $GLOBALS['__l10n']['Image must be in "png" format and have a maximum file size of 30Ko'] = 'L\'image doit être au format "png" et avoir une taille maximum de 30Ko';
-
-?>
