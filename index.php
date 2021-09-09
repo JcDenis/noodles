@@ -11,329 +11,252 @@
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
 
-if (!defined('DC_CONTEXT_ADMIN')){return;}
+if (!defined('DC_CONTEXT_ADMIN')) {
+    return null;
+}
 
 dcPage::check('admin');
 
-$s = $core->blog->settings->noodles;
-$msg = isset($_POST['done']) ? __('Configuration successfully updated') : '';
-$tab = isset($_REQUEST['tab']) ? $_REQUEST['tab'] : 'blocs';
-$img_green = '<img alt="%s" src="images/check-on.png" />';
-$img_red = '<img alt="%s" src="images/check-off.png" />';
+include dirname(__FILE__) . '/inc/_default_noodles.php';
 
-include dirname(__FILE__).'/inc/_default_noodles.php';
+$s = $core->blog->settings->noodles;
 
 $__noodles = noodles::decode($s->noodles_object);
-
-if ($__noodles->isEmpty())
-{
+if ($__noodles->isEmpty()) {
     $__noodles = $__default_noodles;
-}
-else
-{
+} else {
     $default_noodles_array = $__default_noodles->noodles();
-    foreach($default_noodles_array AS $id => $noodle)
-    {
-        if ($__noodles->exists($id)) continue;
-        $__noodles->{$id} = $noodle;
+    foreach($default_noodles_array AS $id => $noodle) {
+        if ($__noodles->exists($id)) {
+            continue;
+        }
+        $__noodles->set($id, $noodle);
     }
 }
-
-if (!$s->noodles_active)
-{
-    $tab = 'settings';
+$public_path = path::real($core->blog->public_path);
+if (!is_dir($public_path) || !is_writable($public_path)) {
+    $public_path = false;
 }
+$default_images = files::scandir(dirname(__FILE__) . '/default-templates/img/');
+if (!is_array($default_images)) {
+    $default_images = [];
+}
+$default_image = $s->noodles_image;
 
-$default_avatars_images = files::scandir(dirname(__FILE__).'/default-templates/img/');
-$avatar_paths = noodlesLibImagePath::getArray($core,'noodles');
-
-$combo_active = array(
-    __('no') => 0,
-    __('yes') => 1
-);
-$combo_place = array(
+$combo_place = [
     __('Begin') => 'prepend',
     __('End') => 'append',
     __('Before') => 'before',
     __('After') => 'after'
-);
-$combo_rating = array(
-    'G'=>'g',
-    'PG'=>'pg',
-    'R'=>'r',
-    'X'=>'x'
-);
-$combo_size = array(
-    '16px'=>16,
-    '24px'=>24,
-    '32px'=>32,
-    '48px'=>48,
-    '56px'=>56,
-    '64px'=>64,
-    '92px'=>92,
-    '128px'=>128,
-    '256px'=>256
-);
+];
+$combo_rating = [
+    'G' => 'g',
+    'PG' => 'pg',
+    'R' => 'r',
+    'X' => 'x'
+];
+$combo_size = [
+    '16px' => 16,
+    '24px' => 24,
+    '32px' => 32,
+    '48px' => 48,
+    '56px' => 56,
+    '64px' => 64,
+    '92px' => 92,
+    '128px' => 128,
+    '256px' => 256
+];
 
-if (!empty($_POST['save']) && $tab == 'settings')
-{
-    try
-    {
-        $s->put('noodles_active',$_POST['noodles_active'],'boolean');
+if (!empty($_POST['save'])) {
+    try {
+        $public_file = $public_path . '/noodles-default-image.png';
+        $s->put('noodles_active', !empty($_POST['noodles_active']), 'boolean');
 
-        # Destination image according to noodlesLibImagePath()
-        $dest_file = DC_ROOT.'/'.$s->public_path.'/noodles-default-image.png';
-
-        # user upload image
-        if ($_POST['noodles_image'] == 'user')
-        {
-            if (2 == $_FILES['noodlesuserfile']['error'])
-            {
+        // user upload image
+        if ($_POST['noodles_image'] == 'user' && !empty($public_path)) {
+            if (2 == $_FILES['noodlesuserfile']['error']) {
                 throw new Exception(__('Maximum file size exceeded'));
             }
-            if ($_FILES['noodlesuserfile']['type'] != 'image/x-png')
-            {
-                throw new Exception(__('Image must be in png format'));
-            }
-            if (0 != $_FILES['noodlesuserfile']['error'])
-            {
+            if (0 != $_FILES['noodlesuserfile']['error']) {
                 throw new Exception(__('Something went wrong while download file'));
             }
-            if ($_FILES['noodlesuserfile']['type'] != 'image/x-png')
-            {
+            if (!in_array($_FILES['noodlesuserfile']['type'], ['image/png', 'image/x-png'])) {
                 throw new Exception(__('Image must be in png format'));
             }
-            if (move_uploaded_file($_FILES['noodlesuserfile']['tmp_name'],$dest_file))
-            {
-                $s->put('noodles_image',1,'boolean');
+            if (move_uploaded_file($_FILES['noodlesuserfile']['tmp_name'], $public_file)) {
+                $s->put('noodles_image', 1, 'boolean');
+            } else {
+                throw new Exception(__('Failed to save image.'));
             }
-        }
-        # Default gravatar.com avatar
-        elseif ($_POST['noodles_image'] == 'gravatar.com')
-        {
-            $s->put('noodles_image',0,'boolean');
-        }
-        # existsing noodles image on blog
-        elseif ($_POST['noodles_image'] == 'existsing')
-        {
-            $s->put('noodles_image',1,'boolean');
-        }
-        # noodles image
-        elseif (preg_match('/^gravatar-[0-9]+.png$/',$_POST['noodles_image']))
-        {
-            $source = dirname(__FILE__).'/default-templates/img/'.$_POST['noodles_image'];
 
-            if (!file_exists($source))
-            {
+        // Default gravatar.com avatar
+        } elseif ($_POST['noodles_image'] == 'gravatar.com') {
+            $s->put('noodles_image', 0, 'boolean');
+
+        // existsing noodles image on blog
+        } elseif ($_POST['noodles_image'] == 'existing') {
+            $s->put('noodles_image', 1, 'boolean');
+
+        // noodles image
+        } elseif (preg_match('/^gravatar-[0-9]+.png$/', $_POST['noodles_image']) && !empty($public_path)) {
+            $source = dirname(__FILE__) . '/default-templates/img/' . $_POST['noodles_image'];
+            if (!file_exists($source)) {
                 throw new Exception(__('Something went wrong while search file'));
             }
-            if (file_put_contents($dest_file,file_get_contents($source)))
-            {
-                $s->put('noodles_image',1,'boolean');
+            if (files::putContent($public_file, file_get_contents($source))) {
+                $s->put('noodles_image', 1, 'boolean');
             }
+
+        // Default gravatar.com avatar
+        } else { //if ($_POST['noodles_image'] == 'gravatar.com') {
+            $s->put('noodles_image', 0, 'boolean');
         }
 
-        $core->blog->triggerBlog();
-        http::redirect('plugin.php?p=noodles&tab=settings&done=1');
-    }
-    catch (Exception $e)
-    {
-        $core->error->add($e->getMessage());
-    }
-}
-
-if (!empty($_POST['save']) && $tab == 'blocs' && !empty($_POST['noodle']))
-{
-    try
-    {
-        foreach($_POST['noodle'] as $id => $bloc)
-        {
-            foreach($bloc as $k => $v)
-            {
-                $__noodles->{$id}->set($k,$v);
-            }
+        // behaviors
+        foreach($_POST['noodle'] as $id => $bloc) {
+            $__noodles->get($id)
+                ->set('active', !empty($bloc['active']))
+                ->set('rating', $bloc['rating'] ?? 'g')
+                ->set('size', $bloc['size'] ?? '16')
+                ->set('css', $bloc['css'] ?? '')
+                ->set('target', $bloc['target'] ?? '')
+                ->set('place', $bloc['place'] ?? 'prepend')
+                ;
         }
-        $s->put('noodles_object',$__noodles->encode(),'string');
+        $s->put('noodles_object', $__noodles->encode(), 'string');
 
         $core->blog->triggerBlog();
-        http::redirect('plugin.php?p=noodles&tab=blocs&done=1');
-    }
-    catch (Exception $e)
-    {
+        dcPage::addSuccessNotice(__('Configuration succesfully updated'));
+        $core->adminurl->redirect('admin.plugin.noodles');
+    } catch (Exception $e) {
         $core->error->add($e->getMessage());
     }
 }
 
-if (!empty($_POST['reset']) && $tab == 'blocs')
-{
-    try
-    {
-        $s->put('noodles_object','','string');
-        $core->blog->triggerBlog();
-        http::redirect('plugin.php?p=noodles&tab=blocs&done=1');
+echo '<html><head><title>' . __('Noodles') . '</title></head><body>' .
+dcPage::breadcrumb([
+    html::escapeHTML($core->blog->name) => '', 
+    __('Noodles') => '', 
+    __('Plugin configuration') => ''
+]) .
+dcPage::notices() . '
+
+<form id="module_config" action="' . 
+    $core->adminurl->get('admin.plugin.noodles') . 
+'" method="post" enctype="multipart/form-data">
+<h3>' . sprintf(__('Configure "%s"'), __('Noodles')) . '</h3>
+<div class="fieldset"><h4>' . __('Activation') . '</h4>
+<p class="field">' . form::checkbox('noodles_active', 1, $s->noodles_active) . '
+<label for="noodles_active">' . __('Enable plugin') . '</label></p>
+</div>
+<div class="fieldset"><h4>' . __('Avatar') . '</h4>
+<p>' . __('Select default avatar to display on unknown users.') . '</p>';
+
+if (!empty($public_path)) {
+    echo '<div class="one-box">';
+    sort($default_images);
+    $i = 0;
+    foreach($default_images AS $f) {
+        if (!preg_match('/gravatar-[0-9]+.png/', $f)) {
+            continue;
+        }
+        $i++;
+        $sz = getimagesize(dirname(__FILE__) . '/default-templates/img/' . $f);
+        $sz[2] = files::size(filesize(dirname(__FILE__) . '/default-templates/img/' . $f));
+
+        echo '
+        <div class="fieldset box">
+        <p>' . form::radio(['noodles_image', 'noodles_image_' . $i], $f) . '
+        <label class="classic" for="noodles_image_' . $i . '">' . basename($f) . '</label></p>
+        <div class="two-box"><div class="box">
+        <p><img src="' . dcPage::getPF('noodles/default-templates/img/' . $f) . '" alt="" /></p>
+        </div><div class="box">
+        <p>' . $sz[0] . 'x' . $sz[1] . '<br />' . $sz[2] . '</p>
+        </div></div>
+        </div>';
     }
-    catch (Exception $e)
-    {
-        $core->error->add($e->getMessage());
-    }
+    echo '</div>';
 }
 
-echo
-'<html>'.
-'<head>'.
-'<title>'.__('Noodles').'</title>'.
-dcPage::jsLoad('js/_posts_list.js').
-dcPage::jsPageTabs($tab).
-'</head>'.
-'<body>'.
-'<h2>'.html::escapeHTML($core->blog->name).' &rsaquo; '.__('Noodles').'</h2>'.
- (!empty($msg) ? '<p class="message">'.$msg.'</p>' : '');
+echo '<div class="one-box">';
 
-# Blocs
-if ($s->noodles_active)
-{
-    echo 
-    '<div class="multi-part" id="blocs" title="'.__('Controls').'">'.
-    '<form method="post" action="plugin.php">'.
-    '<table><thead><tr>'.
-    '<th class="nowrap">'.__('Name').'</th>'.
-    '<th class="nowrap">'.__('Enable').'</th>'.
-    '<th class="nowrap">'.__('Size').'</th>'.
-    '<th class="nowrap">'.__('Rating').'</th>'.
-    '<th class="nowrap">'.__('PHP').'</th>'.
-    '<th class="nowrap">'.__('JS').'</th>'.
-    '<th class="nowrap">'.__('JS target').'</th>'.
-    '<th class="nowrap">'.__('JS place').'</th>'.
-    '<th class="nowrap">'.__('Adjust avatar CSS').'</th>'.
-    '</tr></thead>';
+if (null !== ($default_image_path = noodlesLibImagePath::getPath($core, 'noodles'))) {
+    $sz = getimagesize($default_image_path);
+    $sz[2] = files::size(filesize($default_image_path));
 
-    foreach($__noodles->noodles() as $noodle)
-    {
-        echo
-        '<tr class="line">'.
-        '<td class="nowrap">'.$noodle->name().'</td>'.
-        '<td>'.form::combo(array('noodle['.$noodle->id().'][active]'),$combo_active,$noodle->active).'</td>'.
-        '<td>'.form::combo(array('noodle['.$noodle->id().'][size]'),$combo_size,$noodle->size).'</td>'.
-        '<td>'.form::combo(array('noodle['.$noodle->id().'][rating]'),$combo_rating,$noodle->rating).'</td>'.
-        '<td>'.($noodle->hasPhpCallback() ? $img_green : $img_red).'</td>'.
-        '<td>'.$img_green.'</td>'.
-        '<td>'.form::field(array('noodle['.$noodle->id().'][target]'),20,255,$noodle->target).'</td>'.
-        '<td>'.form::combo(array('noodle['.$noodle->id().'][place]'),$combo_place,$noodle->place).'</td>'.
-        '<td class="maximal">'.
-        form::textArea(array('noodle['.$noodle->id().'][css]'),50,2,$noodle->css).
-        ' .noodles-'.$noodle->id().'{}</td>'.
-        '</tr>';
-    }
-    echo 
-    '</table>'.
-    '<p>'.
-    form::hidden(array('p'),'noodles').
-    form::hidden(array('tab'),'blocs').
-    $core->formNonce().
-    '<input type="submit" name="save" value="'.__('Save').'" /> '.
-    '<input type="submit" name="reset" value="'.__('Reset').'" /></p>'.
-    '</form>'.
-    '</div>';
+    echo '
+    <div class="fieldset box">
+    <p>' . form::radio(['noodles_image', 'public_image'], 'existing', !empty($default_image)) . '
+    <label class="classic" for="public_image">' . __('Blog default image') . '</label></p>
+    <div class="two-box"><div class="box">
+    <p><img src="' . noodlesLibImagePath::getUrl($core, 'noodles') . '#' . rand() . '" alt="" /></p>
+    </div><div class="box">
+    <p>' . $sz[0] . 'x' . $sz[1] . '<br />' . $sz[2] . '</p>
+    </div></div>
+    </div>';
 }
 
-# Settings
-echo 
-'<div class="multi-part" id="settings" title="'.__('Settings').'">'.
-'<form method="post" action="plugin.php" enctype="multipart/form-data">'.
-'<fieldset id="settings-plugin"><legend>'.__('Options').'</legend>'.
-'<p class="field"><label>'.
-form::combo(array('noodles_active'),$combo_active,$s->noodles_active).' '.
-    __('Enable plugin').'</label></p>'.
+if (!empty($public_path)) {
+    echo '
+    <div class="fieldset box">
+    <p>' . form::radio(['noodles_image', 'upload_image'], 'user') . '
+    <label class="classic" for="upload_image">' . __('Upload a new avatar') . '</label></p>
+    <p>' . form::hidden(['MAX_FILE_SIZE'], 30000) . '
+    <input type="file" name="noodlesuserfile" /> 
+    <p class="form-note">' . __('Image must be in "png" format and have a maximum file size of 30Ko') . '</p>
+    </div>';
+}
+echo '
+<div class="fieldset box">
+<p>'. form::radio(['noodles_image', 'com_image'], 'gravatar.com', empty($default_image)) . '
+<label class="classic">' . __('gravatar.com default image').'</label></p>
+</div>';
 
-'</fieldset>'.
-'<fieldset id="setting-avatar"><legend>'.__('Default avatar').'</legend>'.
-'<table><tr><th>&nbsp;</th><th>'.__('Avatar').'</th><th>'.__('size').'</th></tr>'.
-'<tr class="line">';
-
-// By default use gravatar.com image
-$default = '' == $s->noodles_image;
-
-echo 
-'<td colspan="2"><label class="classic">'.
-form::radio(array('noodles_image'),'gravatar.com',$default).
-__('gravatar.com default image').'</label></td>'.
-'<td></td>'.
-'</tr>';
-
-if (!$default)
-{
-    $exists = false;
-
-    // then use theme image
-    if (file_exists($avatar_paths['theme']['dir']))
-    {
-        $exists = $avatar_paths['theme'];
-    }
-    // then public image
-    elseif (file_exists($avatar_paths['public']['dir']))
-    {
-        $exists = $avatar_paths['public'];
-    }
-    // then module
-    elseif (file_exists($avatar_paths['module']['dir']))
-    {
-        $exists = $avatar_paths['module'];
-    }
-    if ($exists)
-    {
-        $sz = getimagesize($exists['dir']);
-        $sz[2] = files::size(filesize($exists['dir']));
-
-        echo 
-        '<tr class="line">'.
-        '<td><label class="classic">'.form::radio(array('noodles_image'),'existing',1).
-        basename($exists['dir']).'</label></td>'.
-        '<td><img src="'.$exists['url'].'" alt="" /></td>'.
-        '<td>'.$sz[0].'x'.$sz[1].'<br />'.$sz[2].'</td>'.
-        '</tr>';
-    }
+if (empty($public_path)) {
+    echo '<p class="info">' . __('Public directory is not writable, you can not use custom gravatar.') . '</p>';
 }
 
-// noodles avatars
-sort($default_avatars_images);
-foreach($default_avatars_images AS $f)
-{
-    if (!preg_match('/gravatar-[0-9]+.png/',$f)) continue;
-    $sz = getimagesize(dirname(__FILE__).'/default-templates/img/'.$f);
-    $sz[2] = files::size(filesize(dirname(__FILE__).'/default-templates/img/'.$f));
+echo '
+</div></div>
+<div class="fieldset"><h4>' . __('Behaviors') . '</h4>
+<div class="table-outer">
+<table><caption class="hidden">' . __('Behaviors list') . '</caption><tbody><tr>
+<th colspan="2" class="first">'.__('Behavior').'</th>
+<th scope="col">'.__('Size').'</th>
+<th scope="col">'.__('Rating').'</th>
+<th scope="col">'.__('PHP').'</th>
+<th scope="col">'.__('JS').'</th>
+<th scope="col">'.__('Target').'</th>
+<th scope="col">'.__('Place').'</th>
+<th colspan="2" scope="col">'.__('Adjust avatar CSS').'</th>
+</tr>';
 
-    echo 
-    '<tr class="line">'.
-    '<td><label class="classic">'.form::radio(array('noodles_image'),$f).
-    basename($f).'</label></td>'.
-    '<td><img src="index.php?pf=noodles/default-templates/img/'.$f.'" alt="" /></td>'.
-    '<td>'.$sz[0].'x'.$sz[1].'<br />'.$sz[2].'</td>'.
-    '</tr>';
+foreach($__noodles->noodles() as $noodle) {
+    echo '
+    <tr class="line">
+    <td>' . form::checkbox(['noodle[' . $noodle->id() . '][active]', 'ck_' . $noodle->id()], 1, $noodle->active) . '</td>
+    <td class="nowrap" scope="row"><label for="ck_' . $noodle->id() .'">' . $noodle->name() . '</label></td>
+    <td>' . form::combo(['noodle[' . $noodle->id() . '][size]'], $combo_size, $noodle->size) . '</td>
+    <td>' . form::combo(['noodle[' . $noodle->id() . '][rating]'], $combo_rating, $noodle->rating) . '</td>
+    <td>' . ($noodle->hasPhpCallback() ? 
+        '<img alt="ok" src="images/check-on.png" />' : 
+        '<img alt="nok" src="images/check-off.png" />'
+    ) . '</td>
+    <td><img alt="ok" src="images/check-on.png" /></td>
+    <td>' . form::field(['noodle[' . $noodle->id() . '][target]'], 20, 255, $noodle->target) . '</td>
+    <td>' . form::combo(['noodle[' . $noodle->id() . '][place]'], $combo_place, $noodle->place).'</td>
+    <td>' . form::field(['noodle[' . $noodle->id() . '][css]'], 50, 255, $noodle->css).'</td>
+    <td> .noodles-' . $noodle->id() . '{}</td>
+    </tr>';
 }
+echo '
+</tbody></table></div>
+<p class="form-note">' . __('Target and Place are for javascript.') . '</p>
+</div>
 
-// user upload avatar
-echo 
-'<tr class="line">'.
-'<td>'.form::radio(array('noodles_image'),'user').'</td>'.
-'<td colspan="2">'.form::hidden(array('MAX_FILE_SIZE'),30000).
-    '<input type="file" name="noodlesuserfile" /> *</td>'.
-'</tr>'.
-'</table>'.
-'<p class="form-note">* '.__('Image must be in "png" format and have a maximum file size of 30Ko').'</p>'.
-'</fieldset>'.
-'<p>'.
-form::hidden(array('p'),'noodles').
-form::hidden(array('tab'),'settings').
-$core->formNonce().
-'<input type="submit" name="save" value="'.__('Save').'" /></p>'.
-'</form>'.
-'</div>';
+<p class="clear">
+<input type="submit" value="' . __('Save') . ' (s)" accesskey="s" name="save" /> ' .
+$core->formNonce() . '</p>
+</form>
 
-# Footer
-echo 
-'<hr class="clear"/>
-<p class="right">
-noodles - '.$core->plugins->moduleInfo('noodles','version').'&nbsp;
-<img alt="'.__('Noodles').'" src="index.php?pf=noodles/icon.png" />
-</p>
 </body></html>';
