@@ -11,7 +11,9 @@
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
 
-if (!defined('DC_CONTEXT_ADMIN')){return;}
+if (!defined('DC_CONTEXT_ADMIN')) {
+    return null;
+}
 
 $this->addUserAction(
     /* type */ 'settings',
@@ -31,12 +33,12 @@ $this->addDirectAction(
     /* type */ 'settings',
     /* action */ 'delete_all',
     /* ns */ 'noodles',
-    /* description */ sprintf(__('delete all %s settings'),'noodles')
+    /* description */ sprintf(__('delete all %s settings'), 'noodles')
 );
 
 $this->addDirectAction(
     /* type */ 'plugins',
     /* action */ 'delete',
     /* ns */ 'noodles',
-    /* description */ sprintf(__('delete %s plugin files'),'noodles')
+    /* description */ sprintf(__('delete %s plugin files'), 'noodles')
 );

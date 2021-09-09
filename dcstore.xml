@@ -1,0 +1,12 @@
+<modules xmlns:da="http://dotaddict.org/da/">
+<module id="noodles">
+<name>Noodles</name>
+<version>0.6.1</version>
+<author>Jean-Christian Denis and contributors</author>
+<desc>Add users gravatars everywhere</desc>
+<file>https://github.com/JcDenis/noodles/releases/download/v0.6.1/plugin-noodles.zip</file>
+<da:dcmin>2.19</da:dcmin>
+<da:details>http://plugins.dotaddict.org/dc2/details/noodles</da:details>
+<da:support>https://github.com/JcDenis/noodles</da:support>
+</module>
+</modules>

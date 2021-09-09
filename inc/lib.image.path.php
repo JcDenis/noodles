@@ -11,40 +11,45 @@
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
 
+if (!defined('DC_RC_PATH')) {
+    return null;
+}
+
 class noodlesLibImagePath
 {
     public static $version = '1.1';
 
-    public static function getArray($core,$m='')
+    public static function getArray($core, $m = '')
     {
         if (!$core->plugins->moduleExists($m)
-         || !$core->url->getBase($m.'module')) {
-            return array(
-                'theme'=>array('dir'=>null,'url'=>null),
-                'public'=>array('dir'=>null,'url'=>null),
-                'module'=>array('dir'=>null,'url'=>null),
-            );
+            || !$core->url->getBase($m . 'module')
+        ) {
+            return [
+                'theme' => ['dir' = >null, 'url' = >null],
+                'public' => ['dir' => null, 'url' => null],
+                'module' => ['dir' => null, 'url' => null],
+            };
         }
 
-        return array(
-            'theme' => array(
-                'dir' => $core->blog->themes_path.'/'.$core->blog->settings->system->theme.'/img/'.$m.'-default-image.png',
-                'url' => $core->blog->settings->system->themes_url.$core->blog->settings->system->theme.'/img/'.$m.'-default-image.png'
-            ),
-            'public' => array(
-                'dir' => $core->blog->public_path.'/'.$m.'-default-image.png',
-                'url' => $core->blog->host.path::clean($core->blog->settings->system->public_url).'/'.$m.'-default-image.png'
-            ),
-            'module' => array(
-                'dir' => $core->plugins->moduleRoot($m).'/default-templates/img/'.$m.'-default-image.png',
-                'url' => $core->blog->url.$core->url->getBase($m.'module').'/img/'.$m.'-default-image.png'
-            )
-        );
+        return [
+            'theme' => [
+                'dir' => $core->blog->themes_path . '/' . $core->blog->settings->system->theme . '/img/' . $m . '-default-image.png',
+                'url' => $core->blog->settings->system->themes_url . $core->blog->settings->system->theme . '/img/' . $m . '-default-image.png'
+            ],
+            'public' => [
+                'dir' => $core->blog->public_path . '/' . $m . '-default-image.png',
+                'url' => $core->blog->host . path::clean($core->blog->settings->system->public_url) . '/' . $m . '-default-image.png'
+            ],
+            'module' => [
+                'dir' => $core->plugins->moduleRoot($m) . '/default-templates/img/' . $m . '-default-image.png',
+                'url' => $core->blog->url . $core->url->getBase($m . 'module') . '/img/' . $m . '-default-image.png'
+            ]
+        ];
     }
 
-    public static function getUrl($core,$m='')
+    public static function getUrl($core, $m = '')
     {
-        $files = self::getArray($core,$m);
+        $files = self::getArray($core, $m);
         foreach($files as $k => $file) {
             if (file_exists($files[$k]['dir']))
                 return $files[$k]['url'];
@@ -52,9 +57,9 @@ class noodlesLibImagePath
         return null;
     }
 
-    public static function getPath($core,$m='')
+    public static function getPath($core, $m = '')
     {
-        $files = self::getArray($core,$m);
+        $files = self::getArray($core, $m);
         foreach($files as $k => $file) {
             if (file_exists($files[$k]['dir']))
                 return $files[$k]['dir'];
@@ -62,13 +67,13 @@ class noodlesLibImagePath
         return null;
     }
 
-    public static function getSize($core,$m='')
+    public static function getSize($core, $m = '')
     {
-        if (!($img = self::getPath($core,$m)))
-            return array('w'=>16,'h'=>16);
+        if (!($img = self::getPath($core, $m)))
+            return ['w' => 16, 'h' => 16];
         else {
             $info = getimagesize($img);
-            return array('w'=>$info[0],'h'=>floor($info[1] /3));
+            return ['w' => $info[0], 'h' => floor($info[1] /3)];
         }
     }
 }

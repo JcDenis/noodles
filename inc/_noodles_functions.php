@@ -11,28 +11,26 @@
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
 
-if (!defined('DC_RC_PATH')){return;}
+if (!defined('DC_RC_PATH')) {
+    return null;
+}
 
 class genericNoodles
 {
-    public static function postURL($noodle,$content='')
+    public static function postURL($noodle, $content = '')
     {
         global $core;
 
         $types = $core->getPostTypes();
-        $reg = '@^'.str_replace('%s','(.*?)',
-            preg_quote($core->blog->url.$types['post']['public_url'])).'$@';
-
-        $ok = preg_match($reg,$content,$m);
-
-        if (!$ok || !$m[1])    return '';
-
-        $rs = $core->blog->getPosts(
-            array('no_content'=>1,'post_url'=>urldecode($m[1]),'limit'=>1)
-        );
-
-        if ($rs->isEmpty()) return '';
-
+        $reg = '@^' . str_replace('%s', '(.*?)', preg_quote($core->blog->url . $types['post']['public_url'])) . '$@';
+        $ok = preg_match($reg, $content, $m);
+        if (!$ok || !$m[1]){
+            return '';
+        }
+        $rs = $core->blog->getPosts(['no_content' => 1, 'post_url' => urldecode($m[1]), 'limit' => 1]);
+        if ($rs->isEmpty()) {
+            return '';
+        }
         return $rs->user_email;
     }
 }
@@ -40,14 +38,15 @@ class genericNoodles
 # Miscellaneous
 class othersNoodles
 {
-    public static function publicPosts($core,$noodle)
+    public static function publicPosts($core, $noodle)
     {
-        if (!$noodle->active) return;
-
+        if (!$noodle->active) {
+            return null;
+        }
         $bhv = $noodle->place == 'prepend' || $noodle->place == 'before' ?
             'publicEntryBeforeContent' : 'publicEntryAfterContent';
 
-        $core->addBehavior($bhv,array('othersNoodles','publicEntryContent'));
+        $core->addBehavior($bhv, ['othersNoodles', 'publicEntryContent']);
     }
 
     public static function publicEntryContent()
@@ -59,22 +58,24 @@ class othersNoodles
         $s = $__noodles->posts->size;
         $r = $__noodles->posts->rating;
         $d = $core->blog->settings->noodles->noodles_image ? 
-            urlencode(noodlesLibImagePath::getUrl($core,'noodles')) : '';
+            urlencode(noodlesLibImagePath::getUrl($core, 'noodles')) : '';
 
         echo 
-        '<img class="noodles-posts" style="width:'.$s.'px;height:'.$s.'px;'.$c.'"'.
-        'src="http://www.gravatar.com/avatar/'.md5($m).
-        '?s='.$s.'&amp;r='.$r.'&amp;d='.$d.'" alt="" />';
+        '<img class="noodles-posts" style="width:' . $s . 'px;height:' . $s . 'px;' . $c . '"' .
+        'src="http://www.gravatar.com/avatar/' . md5($m) .
+        '?s=' . $s . '&amp;r=' . $r . '&amp;d=' . $d . '" alt="" />';
     }
 
-    public static function publicComments($core,$noodle)
+    public static function publicComments($core, $noodle)
     {
-        if (!$noodle->active) return;
+        if (!$noodle->active) {
+            return null;
+        }
 
         $bhv = $noodle->place == 'prepend' || $noodle->place == 'before' ?
             'publicCommentBeforeContent' : 'publicCommentAfterContent';
 
-        $core->addBehavior($bhv,array('othersNoodles','publicCommentContent'));
+        $core->addBehavior($bhv, ['othersNoodles', 'publicCommentContent']);
     }
 
     public static function publicCommentContent()
@@ -86,32 +87,30 @@ class othersNoodles
         $s = $__noodles->comments->size;
         $r = $__noodles->comments->rating;
         $d = $core->blog->settings->noodles->noodles_image ? 
-            urlencode(noodlesLibImagePath::getUrl($core,'noodles')) : '';
+            urlencode(noodlesLibImagePath::getUrl($core, 'noodles')) : '';
 
         echo 
-        '<img class="noodles-comments" style="width:'.$s.'px;height:'.$s.'px;'.$c.'"'.
-        'src="http://www.gravatar.com/avatar/'.md5($m).
-        '?s='.$s.'&amp;r='.$r.'&amp;d='.$d.'" alt="" />';
+        '<img class="noodles-comments" style="width:' . $s . 'px;height:' . $s . 'px;' . $c . '"' .
+        'src="http://www.gravatar.com/avatar/' . md5($m) .
+        '?s=' . $s . '&amp;r=' . $r .'&amp;d=' . $d . '" alt="" />';
     }
 }
 
 # Plugin Widgets
 class widgetsNoodles
 {
-    public static function lastcomments($noodle,$content='')
+    public static function lastcomments($noodle, $content = '')
     {
         global $core;
 
-        $ok = preg_match('@\#c([0-9]+)$@',urldecode($content),$m);
-
-        if (!$ok || !$m[1])    return '';
-
-        $rs = $core->blog->getComments(
-            array('no_content'=>1,'comment_id'=>$m[1],'limit'=>1)
-        );
-
-        if (!$rs->isEmpty()) return $rs->comment_email;
-
+        $ok = preg_match('@\#c([0-9]+)$@', urldecode($content), $m);
+        if (!$ok || !$m[1]) {
+            return '' null;
+        }
+        $rs = $core->blog->getComments(['no_content' => 1, 'comment_id' => $m[1], 'limit' => 1]);
+        if (!$rs->isEmpty()) {
+            return $rs->comment_email;
+        }
         return '';
     }
 }
@@ -119,34 +118,35 @@ class widgetsNoodles
 # Plugin authorMode
 class authormodeNoodles
 {
-    public static function authors($noodle,$content='')
+    public static function authors($noodle, $content = '')
     {
         global $core;
-        $ok = preg_match('@\/([^\/]*?)$@',$content,$m);
 
-        if (!$ok || !$m[1]) return '';
-
+        $ok = preg_match('@\/([^\/]*?)$@', $content, $m);
+        if (!$ok || !$m[1]) {
+            return '';
+        }
         $rs = $core->getUser($m[1]);
-
-        if ($rs->isEmpty()) return '';
-
+        if ($rs->isEmpty()) {
+            return '';
+        }
         return $rs->user_email;
     }
 
-    public static function author($core,$noodle)
+    public static function author($core, $noodle)
     {
-        if ($noodle->active)
-        {
-            $core->addBehavior('publicHeadContent',
-                array('authormodeNoodles','publicHeadContent'));
+        if ($noodle->active) {
+            $core->addBehavior('publicHeadContent', ['authormodeNoodles', 'publicHeadContent']);
         }
     }
 
     public static function publicHeadContent()
     {
-        global $core,$_ctx,$__noodles;
+        global $core, $_ctx, $__noodles;
 
-        if ($_ctx->current_tpl != 'author.html') return;
+        if ($_ctx->current_tpl != 'author.html') {
+            return null;
+        }
 
         $id = $_ctx->users->user_id;
         $u = $core->getUser($id);
@@ -158,15 +158,15 @@ class authormodeNoodles
             urlencode(noodlesLibImagePath::getUrl($core,'noodles')) : '';
 
         echo 
-        '<script type="text/javascript">'."\n".
-        "//<![CDATA[\n".
-        "$(function(){if(!document.getElementById){return;}\n".
-        "$('".$__noodles->author->target."').".$__noodles->author->place."('".
-        '<img class="noodles-comments" style="width:'.$s.'px;height:'.$s.'px;'.$c.'"'.
-            'src="http://www.gravatar.com/avatar/'.md5($m).
-            '?s='.$s.'&amp;r='.$r.'&amp;d='.$d.'" alt="" />'.
-        "');});".
-        "\n//]]>\n".
+        '<script type="text/javascript">' . "\n" .
+        "//<![CDATA[\n" .
+        "$(function(){if(!document.getElementById){return;}\n" .
+        "$('" . $__noodles->author->target . "')." . $__noodles->author->place . "('" .
+        '<img class="noodles-comments" style="width:' . $s . 'px;height:' . $s . 'px;' . $c .'"' .
+            'src="http://www.gravatar.com/avatar/' . md5($m) .
+            '?s=' . $s . '&amp;r=' . $r . '&amp;d=' . $d . '" alt="" />' .
+        "');});" .
+        "\n//]]>\n" .
         "</script>\n";
     }
 }

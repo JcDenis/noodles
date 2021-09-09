@@ -11,16 +11,20 @@
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
 
-if (!defined('DC_RC_PATH')){return;}
+if (!defined('DC_RC_PATH')) {
+    return null;
+}
 
 class noodles
 {
-    private $noodles = array();
+    private $noodles = [];
 
     public static function decode($s)
     {
         $o = @unserialize(base64_decode($s));
-        if ($o instanceof self)    return $o;
+        if ($o instanceof self) {
+            return $o;
+        }
         return new self;
     }
 
@@ -29,9 +33,10 @@ class noodles
         return base64_encode(serialize($this));
     }
 
-    public function add($id,$name,$js_callback,$php_callback=null)
+    public function add($id, $name, $js_callback, $php_callback = null)
     {
-        $this->noodles[$id] = new noodle($id,$name,$js_callback,$php_callback);
+        $this->noodles[$id] = new noodle($id, $name, $js_callback, $php_callback);
+        return $this->noodles[$id];
     }
 
     public function __get($id)
@@ -39,7 +44,7 @@ class noodles
         return isset($this->noodles[$id]) ? $this->noodles[$id] : null;
     }
 
-    public function __set($id,$noodle)
+    public function __set($id, $noodle)
     {
         return $this->noodles[$id] = $noodle;
     }
@@ -66,15 +71,15 @@ class noodle
     private $name;
     private $js_callback;
     private $php_callback;
-    private $settings = array(
+    private $settings = [
         'active' => 0,
         'rating' => 'g',
         'size' => 16,
         'target' => '',
         'place' => 'prepend'
-    );
+    ];
 
-    public function __construct($id,$name,$js_callback,$php_callback=null)
+    public function __construct($id, $name, $js_callback, $php_callback = null)
     {
         $this->id = $id;
         $this->name = $name;
@@ -92,10 +97,12 @@ class noodle
         return $this->name;
     }
 
-    public function jsCallback($g,$content='')
+    public function jsCallback($g, $content = '')
     {
-        if (!is_callable($this->js_callback)) return null;
-        return call_user_func($this->js_callback,$g,$content);
+        if (!is_callable($this->js_callback)) {
+            return null;
+        }
+        return call_user_func($this->js_callback, $g, $content);
     }
 
     public function hasJsCallback()
@@ -105,8 +112,10 @@ class noodle
 
     public function phpCallback($core)
     {
-        if (!is_callable($this->php_callback)) return null;
-        return call_user_func($this->php_callback,$core,$this);
+        if (!is_callable($this->php_callback)) {
+            return null;
+        }
+        return call_user_func($this->php_callback, $core, $this);
     }
 
     public function hasPhpCallback()
@@ -114,44 +123,69 @@ class noodle
         return !empty($this->php_callback);
     }
 
-    public function set($type,$value)
+    public function set($type, $value)
     {
-        switch ($type)
-        {
+        switch ($type) {
             case 'active':
-            $this->settings['active'] = abs((integer) $value);
+                $this->settings['active'] = abs((integer) $value);
             break;
 
             case 'rating':
-            $this->settings['rating'] = in_array($value,array('g','pg','r','x')) ?
-                $value : 'g';
+                $this->settings['rating'] = in_array($value, ['g', 'pg', 'r', 'x']) ? $value : 'g';
             break;
 
             case 'size':
-            $this->settings['size'] = 
-                in_array($value,array(16,24,32,48,56,64,92,128,256)) ?
-                $value : 16;
+                $this->settings['size'] = in_array($value, [16, 24, 32, 48, 56, 64, 92, 128, 256]) ? $value : 16;
             break;
 
             case 'css':
-            $this->settings['css'] = (string) $value;
+                $this->settings['css'] = (string) $value;
             break;
 
             case 'target':
-            $this->settings['target'] = (string) $value;
+                $this->settings['target'] = (string) $value;
             break;
 
             case 'place':
-            $this->settings['place'] = 
-                in_array($value,array('append','prepend','before','after')) ? 
-                $value : 'prepend';
+                $this->settings['place'] = in_array($value, ['append', 'prepend', 'before', 'after']) ? $value : 'prepend';
             break;
         }
+        return $this;
     }
 
-    public function __set($type,$value)
+    public function active($value)
     {
-        $this->set($type,$value);
+        return $this->set('active', $value);
+    }
+
+    public function rating($value)
+    {
+        return $this->set('rating', $value);
+    }
+
+    public function size($value)
+    {
+        return $this->set('size', $value);
+    }
+
+    public function css($value)
+    {
+        return $this->set('css', $value);
+    }
+
+    public function target($value)
+    {
+        return $this->set('target', $value);
+    }
+
+    public function place($value)
+    {
+        return $this->set('place', $value);
+    }
+
+    public function __set($type, $value)
+    {
+        $this->set($type, $value);
     }
 
     public function get($type)
