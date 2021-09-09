@@ -86,7 +86,7 @@ if (!empty($_POST['save'])) {
             if (move_uploaded_file($_FILES['noodlesuserfile']['tmp_name'], $public_file)) {
                 $s->put('noodles_image', 1, 'boolean');
             } else {
-                throw new Exception(__('Failed to save image.'));
+                throw new Exception(__('Failed to save image'));
             }
 
         // Default gravatar.com avatar
@@ -126,7 +126,7 @@ if (!empty($_POST['save'])) {
         $s->put('noodles_object', $__noodles->encode(), 'string');
 
         $core->blog->triggerBlog();
-        dcPage::addSuccessNotice(__('Configuration succesfully updated'));
+        dcPage::addSuccessNotice(__('Configuration successfully updated'));
         $core->adminurl->redirect('admin.plugin.noodles');
     } catch (Exception $e) {
         $core->error->add($e->getMessage());
@@ -221,7 +221,7 @@ echo '
 <div class="fieldset"><h4>' . __('Behaviors') . '</h4>
 <div class="table-outer">
 <table><caption class="hidden">' . __('Behaviors list') . '</caption><tbody><tr>
-<th colspan="2" class="first">'.__('Behavior').'</th>
+<th colspan="2" class="first">'.__('Search area').'</th>
 <th scope="col">'.__('Size').'</th>
 <th scope="col">'.__('Rating').'</th>
 <th scope="col">'.__('PHP').'</th>
