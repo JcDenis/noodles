@@ -105,7 +105,7 @@ class widgetsNoodles
 
         $ok = preg_match('@\#c([0-9]+)$@', urldecode($content), $m);
         if (!$ok || !$m[1]) {
-            return '' null;
+            return '';
         }
         $rs = $core->blog->getComments(['no_content' => 1, 'comment_id' => $m[1], 'limit' => 1]);
         if (!$rs->isEmpty()) {
