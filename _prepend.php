@@ -12,7 +12,7 @@
  */
 
 if (!defined('DC_RC_PATH')) {
-	return null;
+    return null;
 }
 
 $__autoload['noodlesImg'] = dirname(__FILE__) . '/inc/lib.noodles.img.php';
@@ -21,14 +21,14 @@ $__autoload['noodlesLibImagePath'] = dirname(__FILE__) . '/inc/lib.image.path.ph
 $core->blog->settings->addNamespace('noodles');
 
 $core->url->register(
-	'noodlesmodule',
-	'noodles',
-	'^noodles/(.+)$',
+    'noodlesmodule',
+    'noodles',
+    '^noodles/(.+)$',
     ['urlNoodles', 'noodles']
 );
 $core->url->register(
-	'noodlesservice',
-	'noodle',
-	'^noodle/$',
+    'noodlesservice',
+    'noodle',
+    '^noodle/$',
     ['urlNoodles', 'service']
 );

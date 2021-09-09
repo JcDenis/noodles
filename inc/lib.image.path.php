@@ -25,23 +25,23 @@ class noodlesLibImagePath
             || !$core->url->getBase($m . 'module')
         ) {
             return [
-                'theme' => ['dir' = >null, 'url' = >null],
+                'theme' => ['dir' => null, 'url' => null],
                 'public' => ['dir' => null, 'url' => null],
                 'module' => ['dir' => null, 'url' => null],
-            };
+            ];
         }
 
         return [
             'theme' => [
-                'dir' => $core->blog->themes_path . '/' . $core->blog->settings->system->theme . '/img/' . $m . '-default-image.png',
+                'dir' => path::real($core->blog->themes_path . '/' . $core->blog->settings->system->theme . '/img') . '/' . $m . '-default-image.png',
                 'url' => $core->blog->settings->system->themes_url . $core->blog->settings->system->theme . '/img/' . $m . '-default-image.png'
             ],
             'public' => [
-                'dir' => $core->blog->public_path . '/' . $m . '-default-image.png',
+                'dir' => path::real($core->blog->public_path) . '/' . $m . '-default-image.png',
                 'url' => $core->blog->host . path::clean($core->blog->settings->system->public_url) . '/' . $m . '-default-image.png'
             ],
             'module' => [
-                'dir' => $core->plugins->moduleRoot($m) . '/default-templates/img/' . $m . '-default-image.png',
+                'dir' => path::real($core->plugins->moduleRoot($m) . '/default-templates/img') . '/' . $m . '-default-image.png',
                 'url' => $core->blog->url . $core->url->getBase($m . 'module') . '/img/' . $m . '-default-image.png'
             ]
         ];

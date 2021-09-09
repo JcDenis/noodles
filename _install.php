@@ -26,6 +26,12 @@ try {
     $core->blog->settings->noodles->put(
         'noodles_active', false, 'boolean', 'Enable extension', false, true
     );
+    $core->blog->settings->noodles->put(
+        'noodles_image', '', 'string', 'Image filename', false, true
+    );
+    $core->blog->settings->noodles->put(
+        'noodles_object', '', 'string', 'Noodles behaviors', false, true
+    );
     $core->setVersion('noodles', $new_version);
     return true;
 } catch (Exception $e) {

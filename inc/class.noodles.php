@@ -22,7 +22,7 @@ class noodles
     public static function decode($s)
     {
         $o = @unserialize(base64_decode($s));
-        if ($o instanceof self) {
+        if ($o instanceof noodles) {
             return $o;
         }
         return new self;
@@ -39,14 +39,24 @@ class noodles
         return $this->noodles[$id];
     }
 
-    public function __get($id)
+    public function get($id)
     {
         return isset($this->noodles[$id]) ? $this->noodles[$id] : null;
     }
 
-    public function __set($id, $noodle)
+    public function __get($id)
+    {
+        return $this->get($id);
+    }
+
+    public function set($id, $module)
     {
         return $this->noodles[$id] = $noodle;
+    }
+
+    public function __set($id, $noodle)
+    {
+        return $this->set($id, $noodle);
     }
 
     public function exists($id)
