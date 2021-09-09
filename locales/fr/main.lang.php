@@ -78,4 +78,3 @@ $GLOBALS['__l10n']['Adjust avatar CSS'] = 'Ajuster la CSS de l\'image';
 
 #index.php:254
 $GLOBALS['__l10n']['Target and Place are for javascript.'] = 'Les cible et emplacement sont utilisés par les scripts javascript.';
-
