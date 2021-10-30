@@ -34,13 +34,13 @@ $core->url->register(
 );
 $core->url->register(
     'noodlescss',
-    'noodls.css',
-    '^noodls.css',
+    'noodles.css',
+    '^noodles\.css',
     ['urlNoodles', 'css']
 );
 $core->url->register(
     'noodlesjs',
-    'noodls.js',
-    '^noodls.js',
+    'noodles.js',
+    '^noodles\.js',
     ['urlNoodles', 'js']
 );
