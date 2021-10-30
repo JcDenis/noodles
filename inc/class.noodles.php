@@ -49,7 +49,7 @@ class noodles
         return $this->get($id);
     }
 
-    public function set($id, $module)
+    public function set($id, $noodle)
     {
         return $this->noodles[$id] = $noodle;
     }
