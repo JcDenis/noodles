@@ -45,45 +45,63 @@ class publicNoodles
 {
     public static function publicHeadContent($core)
     {
-        $__noodles =& $GLOBALS['__noodles'];
-
-        $css = "\n";
-        $targets = array();
-        foreach($__noodles->noodles() AS $noodle) {
-            if (!$noodle->active || !$noodle->hasJsCallback()) {
-                continue;
-            }
-            $css .= '.noodles-' . $noodle->id() . '{' . $noodle->css . '}' . "\n";
-            $targets[] = 
-            '  $(\'' . html::escapeJS($noodle->target) . '\').noodles({' .
-                'imgId:\'' . html::escapeJS($noodle->id()) . '\',' .
-                'imgPlace:\'' . html::escapeJS($noodle->place) . '\'' .
-            '});';
-        }
-        if (empty($targets)) {
-            return null;
-        }
-
-        echo 
-        "\n<!-- CSS for noodles --> \n" .
-        '<style type="text/css">' . html::escapeHTML($css) . '</style>' .
-        "\n<!-- JS for noodles --> \n" .
-        dcUtils::jsLoad($core->blog->url . $core->url->getBase('noodlesmodule') . "/js/jquery.noodles.js") .
-        "<script type=\"text/javascript\"> \n" .
-        "//<![CDATA[\n" .
-        " \$(function(){if(!document.getElementById){return;} \n" .
-        "  \$.fn.noodles.defaults.service_url = '" . html::escapeJS($core->blog->url . $core->url->getBase('noodlesservice') . '/') . "'; \n" .
-        "  \$.fn.noodles.defaults.service_func = '" . html::escapeJS('getNoodle') . "'; \n" .
-        implode("\n", $targets) ."\n" .
-        "})\n" .
-        "\n//]]>\n" .
-        "</script>\n";
+        echo
+            dcUtils::cssLoad($core->blog->url . $core->url->getURLFor('noodlescss')) .
+            dcUtils::jsLoad($core->blog->url . $core->url->getBase('noodlesmodule') . "/js/jquery.noodles.js") .
+            dcUtils::jsLoad($core->blog->url . $core->url->getURLFor('noodlesjs'));
     }
 }
 
 class urlNoodles extends dcUrlHandlers
 {
     public static $api_url = 'http://www.gravatar.com/avatar/%s?s=%s&amp;r=%s&amp;d=%s';
+
+    public static function css($args)
+    {
+        global $core, $__noodles;
+
+        $css = '';
+        foreach($__noodles->noodles() AS $noodle) {
+            if (!$noodle->active || !$noodle->hasJsCallback()) {
+                continue;
+            }
+            $css .= '.noodles-' . $noodle->id() . '{' . $noodle->css . '}' . "\n";
+        }
+
+        header('Content-Type: text/css; charset=UTF-8');
+
+        echo $css;
+
+        exit;
+    }
+
+    public static function js($args)
+    {
+        global $core, $__noodles;
+
+        $targets = [];
+        foreach($__noodles->noodles() AS $noodle) {
+            if (!$noodle->active || !$noodle->hasJsCallback()) {
+                continue;
+            }
+            $targets[] = 
+                '$(\'' . html::escapeJS($noodle->target) . '\').noodles({' .
+                '  imgId:\'' . html::escapeJS($noodle->id()) . '\',' .
+                '  imgPlace:\'' . html::escapeJS($noodle->place) . '\'' .
+                '});';
+        }
+
+        header('Content-Type: text/javascript; charset=UTF-8');
+
+        echo 
+        "\$(function(){if(!document.getElementById){return;} \n" .
+        "\$.fn.noodles.defaults.service_url = '" . html::escapeJS($core->blog->url . $core->url->getBase('noodlesservice') . '/') . "'; \n" .
+        "\$.fn.noodles.defaults.service_func = '" . html::escapeJS('getNoodle') . "'; \n" .
+        implode("\n", $targets) .
+        "})\n";
+
+        exit;
+    }
 
     public static function service($args)
     {

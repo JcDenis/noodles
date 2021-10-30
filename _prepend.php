@@ -32,3 +32,15 @@ $core->url->register(
     '^noodle/$',
     ['urlNoodles', 'service']
 );
+$core->url->register(
+    'noodlescss',
+    'noodls.css',
+    '^noodls.css',
+    ['urlNoodles', 'css']
+);
+$core->url->register(
+    'noodlesjs',
+    'noodls.js',
+    '^noodls.js',
+    ['urlNoodles', 'js']
+);
