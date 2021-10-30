@@ -1,5 +1,12 @@
 # README
 
+[![Release](https://img.shields.io/github/v/release/JcDenis/noodles)](https://github.com/JcDenis/noodles/releases)
+[![Date](https://img.shields.io/github/release-date/JcDenis/noodles)](https://github.com/JcDenis/noodles/releases)
+[![Issues](https://img.shields.io/github/issues/JcDenis/noodles)](https://github.com/JcDenis/noodles/issues)
+[![Dotclear](https://img.shields.io/badge/dotclear-v2.19-blue.svg)](https://fr.dotclear.org/download)
+[![Dotaddict](https://img.shields.io/badge/dotaddict-official-green.svg)](https://plugins.dotaddict.org/dc2/details/noodles)
+[![License](https://img.shields.io/github/license/JcDenis/noodles)](https://github.com/JcDenis/noodles/blob/master/LICENSE)
+
 ## WHAT IS NOODLES ?
 
 _noodles_ is a plugin for the open-source 

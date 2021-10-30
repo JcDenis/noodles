@@ -1,6 +1,8 @@
-0.7.1 - dev
+dev
 - [ ] add cache system
 - [ ] add option for gravatar built in unknow avatar @see https://fr.gravatar.com/site/implement/images/
+
+0.8 - 2021.10.30
 - use url handler for dynamic js and css
 - add libravatar API
 
