@@ -54,8 +54,6 @@ class publicNoodles
 
 class urlNoodles extends dcUrlHandlers
 {
-    public static $api_url = 'http://www.gravatar.com/avatar/%s?s=%s&amp;r=%s&amp;d=%s';
-
     public static function css($args)
     {
         global $core, $__noodles;
@@ -153,6 +151,10 @@ class urlNoodles extends dcUrlHandlers
         $d = $core->blog->settings->noodles->noodles_image ? 
             urlencode(noodlesLibImagePath::getUrl($core, 'noodles')) : '';
 
+        $u = $core->blog->settings->noodles->noodles_api;
+        if (empty($u)) {
+            $u = 'http://www.gravatar.com/';
+        }
         if (!$m) {
             $m = 'nobody@nowhere.tld';
         }
@@ -166,7 +168,7 @@ class urlNoodles extends dcUrlHandlers
         $m = md5(strtolower(trim( $m)));
         $im = new xmlTag('noodle');
         $im->size = $s;
-        $im->src = sprintf(self::$api_url, $m, $s, $r, $d);
+        $im->src = sprintf('%savatar/%s?s=%s&amp;r=%s&amp;d=%s', $u, $m, $s, $r, $d);
         $rsp->insertNode($im);
 
         $rsp->status = 'ok';

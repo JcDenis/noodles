@@ -27,6 +27,9 @@ try {
         'noodles_active', false, 'boolean', 'Enable extension', false, true
     );
     $core->blog->settings->noodles->put(
+        'noodles_api', 'http://www.gravatar.com/', 'string', 'external API to use', false, true
+    );
+    $core->blog->settings->noodles->put(
         'noodles_image', '', 'string', 'Image filename', false, true
     );
     $core->blog->settings->noodles->put(

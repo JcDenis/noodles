@@ -43,6 +43,11 @@ if (!is_array($default_images)) {
 }
 $default_image = $s->noodles_image;
 
+$combo_api = [
+    'gravatar' => 'http://www.gravatar.com/',
+    'libravatar' => 'http://cdn.libravatar.org/'
+];
+
 $combo_place = [
     __('Begin') => 'prepend',
     __('End') => 'append',
@@ -71,6 +76,7 @@ if (!empty($_POST['save'])) {
     try {
         $public_file = $public_path . '/noodles-default-image.png';
         $s->put('noodles_active', !empty($_POST['noodles_active']), 'boolean');
+        $s->put('noodles_api', $_POST['noodles_api'], 'string');
 
         // user upload image
         if ($_POST['noodles_image'] == 'user' && !empty($public_path)) {
@@ -146,8 +152,11 @@ dcPage::notices() . '
 '" method="post" enctype="multipart/form-data">
 <h3>' . sprintf(__('Configure "%s"'), __('Noodles')) . '</h3>
 <div class="fieldset"><h4>' . __('Activation') . '</h4>
-<p class="field">' . form::checkbox('noodles_active', 1, $s->noodles_active) . '
-<label for="noodles_active">' . __('Enable plugin') . '</label></p>
+<p><label for="noodles_active">' . 
+form::checkbox('noodles_active', 1, $s->noodles_active) . 
+__('Enable plugin noodles on this blog') . '</label></p>
+<p><label for="noodles_api" class="classic">' . __('API:') . ' </label>' .
+form::combo('noodles_api', $combo_api, $s->noodles_api) . '</p>
 </div>
 <div class="fieldset"><h4>' . __('Avatar') . '</h4>
 <p>' . __('Select default avatar to display on unknown users.') . '</p>';
@@ -209,7 +218,7 @@ if (!empty($public_path)) {
 echo '
 <div class="fieldset box">
 <p>'. form::radio(['noodles_image', 'com_image'], 'gravatar.com', empty($default_image)) . '
-<label class="classic">' . __('gravatar.com default image').'</label></p>
+<label class="classic">' . __('API default image').'</label></p>
 </div>';
 
 if (empty($public_path)) {

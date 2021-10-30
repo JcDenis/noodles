@@ -2,6 +2,7 @@
 - [ ] add cache system
 - [ ] add option for gravatar built in unknow avatar @see https://fr.gravatar.com/site/implement/images/
 - use url handler for dynamic js and css
+- add libravatar API
 
 0.7 - 2021.09.09
 - fix image directories
