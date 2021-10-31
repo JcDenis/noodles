@@ -198,7 +198,7 @@ if (null !== ($default_image_path = noodlesLibImagePath::getPath($core, 'noodles
     <p>' . form::radio(['noodles_image', 'public_image'], 'existing', !empty($default_image)) . '
     <label class="classic" for="public_image">' . __('Blog default image') . '</label></p>
     <div class="two-box"><div class="box">
-    <p><img src="' . noodlesLibImagePath::getUrl($core, 'noodles') . '#' . rand() . '" alt="" /></p>
+    <p><img src="' . noodlesLibImagePath::getUrl($core, 'noodles') . '?' . rand() . '" alt="" /></p>
     </div><div class="box">
     <p>' . $sz[0] . 'x' . $sz[1] . '<br />' . $sz[2] . '</p>
     </div></div>
