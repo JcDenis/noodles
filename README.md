@@ -30,8 +30,14 @@ Dotaddict repository. (See Dotclear's documentation to know how do this)
 Go to ''plugins manager'', expand _noodles_ information then 
 go to ''configure plugin'', fill in form.
 
-## MORE
+## LINKS
 
- * License : GNU GPL v2
+ * License : [GNU GPL v2](https://www.gnu.org/licenses/old-licenses/lgpl-2.0.html)
  * Source & contribution : [GitHub Page](https://github.com/JcDenis/noodles)
  * Packages & details:  [Dotaddict Page](https://plugins.dotaddict.org/dc2/details/noodles)
+
+## CONTRIBUTORS
+
+ * Jean-Christian Denis
+
+ You are welcome to contribute to this code.
