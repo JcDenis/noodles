@@ -10,7 +10,6 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-
 if (!defined('DC_RC_PATH')) {
     return null;
 }
@@ -25,7 +24,7 @@ class noodlesLibImagePath
             || !$core->url->getBase($m . 'module')
         ) {
             return [
-                'theme' => ['dir' => null, 'url' => null],
+                'theme'  => ['dir' => null, 'url' => null],
                 'public' => ['dir' => null, 'url' => null],
                 'module' => ['dir' => null, 'url' => null],
             ];
@@ -50,30 +49,34 @@ class noodlesLibImagePath
     public static function getUrl($core, $m = '')
     {
         $files = self::getArray($core, $m);
-        foreach($files as $k => $file) {
-            if (file_exists($files[$k]['dir']))
+        foreach ($files as $k => $file) {
+            if (file_exists($files[$k]['dir'])) {
                 return $files[$k]['url'];
+            }
         }
+
         return null;
     }
 
     public static function getPath($core, $m = '')
     {
         $files = self::getArray($core, $m);
-        foreach($files as $k => $file) {
-            if (file_exists($files[$k]['dir']))
+        foreach ($files as $k => $file) {
+            if (file_exists($files[$k]['dir'])) {
                 return $files[$k]['dir'];
+            }
         }
+
         return null;
     }
 
     public static function getSize($core, $m = '')
     {
-        if (!($img = self::getPath($core, $m)))
+        if (!($img = self::getPath($core, $m))) {
             return ['w' => 16, 'h' => 16];
-        else {
-            $info = getimagesize($img);
-            return ['w' => $info[0], 'h' => floor($info[1] /3)];
         }
+        $info = getimagesize($img);
+
+        return ['w' => $info[0], 'h' => floor($info[1] / 3)];
     }
 }

@@ -10,7 +10,6 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-
 $this->registerModule(
     'Noodles',
     'Add users gravatars everywhere',
@@ -24,7 +23,7 @@ $this->registerModule(
         'details'     => 'http://plugins.dotaddict.org/dc2/details/noodles',
         'repository'  => 'https://raw.githubusercontent.com/JcDenis/noodles/master/dcstore.xml',
         'settings'    => [
-            'self'    => ''
+            'self' => ''
         ]
     ]
 );

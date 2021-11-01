@@ -10,7 +10,6 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-
 if (!defined('DC_RC_PATH')) {
     return null;
 }
@@ -25,7 +24,8 @@ class noodles
         if ($o instanceof noodles) {
             return $o;
         }
-        return new self;
+
+        return new self();
     }
 
     public function encode()
@@ -36,12 +36,13 @@ class noodles
     public function add($id, $name, $js_callback, $php_callback = null)
     {
         $this->noodles[$id] = new noodle($id, $name, $js_callback, $php_callback);
+
         return $this->noodles[$id];
     }
 
     public function get($id)
     {
-        return isset($this->noodles[$id]) ? $this->noodles[$id] : null;
+        return $this->noodles[$id] ?? null;
     }
 
     public function __get($id)
@@ -84,16 +85,16 @@ class noodle
     private $settings = [
         'active' => 0,
         'rating' => 'g',
-        'size' => 16,
+        'size'   => 16,
         'target' => '',
-        'place' => 'prepend'
+        'place'  => 'prepend'
     ];
 
     public function __construct($id, $name, $js_callback, $php_callback = null)
     {
-        $this->id = $id;
-        $this->name = $name;
-        $this->js_callback = $js_callback;
+        $this->id           = $id;
+        $this->name         = $name;
+        $this->js_callback  = $js_callback;
         $this->php_callback = $php_callback;
     }
 
@@ -112,6 +113,7 @@ class noodle
         if (!is_callable($this->js_callback)) {
             return null;
         }
+
         return call_user_func($this->js_callback, $g, $content);
     }
 
@@ -125,6 +127,7 @@ class noodle
         if (!is_callable($this->php_callback)) {
             return null;
         }
+
         return call_user_func($this->php_callback, $core, $this);
     }
 
@@ -137,29 +140,36 @@ class noodle
     {
         switch ($type) {
             case 'active':
-                $this->settings['active'] = abs((integer) $value);
+                $this->settings['active'] = abs((int) $value);
+
             break;
 
             case 'rating':
                 $this->settings['rating'] = in_array($value, ['g', 'pg', 'r', 'x']) ? $value : 'g';
+
             break;
 
             case 'size':
                 $this->settings['size'] = in_array($value, [16, 24, 32, 48, 56, 64, 92, 128, 256]) ? $value : 16;
+
             break;
 
             case 'css':
                 $this->settings['css'] = (string) $value;
+
             break;
 
             case 'target':
                 $this->settings['target'] = (string) $value;
+
             break;
 
             case 'place':
                 $this->settings['place'] = in_array($value, ['append', 'prepend', 'before', 'after']) ? $value : 'prepend';
+
             break;
         }
+
         return $this;
     }
 
@@ -200,7 +210,7 @@ class noodle
 
     public function get($type)
     {
-        return isset($this->settings[$type]) ? $this->settings[$type] : null;
+        return $this->settings[$type] ?? null;
     }
 
     public function __get($type)

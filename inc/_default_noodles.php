@@ -10,7 +10,6 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-
 if (!defined('DC_RC_PATH')) {
     return null;
 }
@@ -18,7 +17,7 @@ if (!defined('DC_RC_PATH')) {
 require dirname(__FILE__) . '/class.noodles.php';
 
 global $__default_noodles;
-$__default_noodles = new noodles;
+$__default_noodles = new noodles();
 
 # Posts (by public behavior)
 $__default_noodles
@@ -52,7 +51,7 @@ if ($core->plugins->moduleExists('widgets')) {
         ->target('.lastposts li a')
         ->css('margin-right:2px;');
 
-    # Widget Last comments 
+    # Widget Last comments
     $__default_noodles
         ->add('lastcomments', __('Last comments'), ['widgetsNoodles', 'lastcomments'])
         ->active(true)

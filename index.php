@@ -10,7 +10,6 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-
 if (!defined('DC_CONTEXT_ADMIN')) {
     return null;
 }
@@ -26,7 +25,7 @@ if ($__noodles->isEmpty()) {
     $__noodles = $__default_noodles;
 } else {
     $default_noodles_array = $__default_noodles->noodles();
-    foreach($default_noodles_array AS $id => $noodle) {
+    foreach ($default_noodles_array as $id => $noodle) {
         if ($__noodles->exists($id)) {
             continue;
         }
@@ -44,30 +43,30 @@ if (!is_array($default_images)) {
 $default_image = $s->noodles_image;
 
 $combo_api = [
-    'gravatar' => 'http://www.gravatar.com/',
+    'gravatar'   => 'http://www.gravatar.com/',
     'libravatar' => 'http://cdn.libravatar.org/'
 ];
 
 $combo_place = [
-    __('Begin') => 'prepend',
-    __('End') => 'append',
+    __('Begin')  => 'prepend',
+    __('End')    => 'append',
     __('Before') => 'before',
-    __('After') => 'after'
+    __('After')  => 'after'
 ];
 $combo_rating = [
-    'G' => 'g',
+    'G'  => 'g',
     'PG' => 'pg',
-    'R' => 'r',
-    'X' => 'x'
+    'R'  => 'r',
+    'X'  => 'x'
 ];
 $combo_size = [
-    '16px' => 16,
-    '24px' => 24,
-    '32px' => 32,
-    '48px' => 48,
-    '56px' => 56,
-    '64px' => 64,
-    '92px' => 92,
+    '16px'  => 16,
+    '24px'  => 24,
+    '32px'  => 32,
+    '48px'  => 48,
+    '56px'  => 56,
+    '64px'  => 64,
+    '92px'  => 92,
     '128px' => 128,
     '256px' => 256
 ];
@@ -95,7 +94,7 @@ if (!empty($_POST['save'])) {
                 throw new Exception(__('Failed to save image'));
             }
 
-        // Default gravatar.com avatar
+            // Default gravatar.com avatar
         } elseif ($_POST['noodles_image'] == 'gravatar.com') {
             $s->put('noodles_image', 0, 'boolean');
 
@@ -113,13 +112,13 @@ if (!empty($_POST['save'])) {
                 $s->put('noodles_image', 1, 'boolean');
             }
 
-        // Default gravatar.com avatar
+            // Default gravatar.com avatar
         } else { //if ($_POST['noodles_image'] == 'gravatar.com') {
             $s->put('noodles_image', 0, 'boolean');
         }
 
         // behaviors
-        foreach($_POST['noodle'] as $id => $bloc) {
+        foreach ($_POST['noodle'] as $id => $bloc) {
             $__noodles->get($id)
                 ->set('active', !empty($bloc['active']))
                 ->set('rating', $bloc['rating'] ?? 'g')
@@ -141,19 +140,19 @@ if (!empty($_POST['save'])) {
 
 echo '<html><head><title>' . __('Noodles') . '</title></head><body>' .
 dcPage::breadcrumb([
-    html::escapeHTML($core->blog->name) => '', 
-    __('Noodles') => '', 
-    __('Plugin configuration') => ''
+    html::escapeHTML($core->blog->name) => '',
+    __('Noodles')                       => '',
+    __('Plugin configuration')          => ''
 ]) .
 dcPage::notices() . '
 
-<form id="module_config" action="' . 
-    $core->adminurl->get('admin.plugin.noodles') . 
+<form id="module_config" action="' .
+    $core->adminurl->get('admin.plugin.noodles') .
 '" method="post" enctype="multipart/form-data">
 <h3>' . sprintf(__('Configure "%s"'), __('Noodles')) . '</h3>
 <div class="fieldset"><h4>' . __('Activation') . '</h4>
-<p><label for="noodles_active">' . 
-form::checkbox('noodles_active', 1, $s->noodles_active) . 
+<p><label for="noodles_active">' .
+form::checkbox('noodles_active', 1, $s->noodles_active) .
 __('Enable plugin noodles on this blog') . '</label></p>
 <p><label for="noodles_api" class="classic">' . __('API:') . ' </label>' .
 form::combo('noodles_api', $combo_api, $s->noodles_api) . '</p>
@@ -165,12 +164,12 @@ if (!empty($public_path)) {
     echo '<div class="one-box">';
     sort($default_images);
     $i = 0;
-    foreach($default_images AS $f) {
+    foreach ($default_images as $f) {
         if (!preg_match('/gravatar-[0-9]+.png/', $f)) {
             continue;
         }
         $i++;
-        $sz = getimagesize(dirname(__FILE__) . '/default-templates/img/' . $f);
+        $sz    = getimagesize(dirname(__FILE__) . '/default-templates/img/' . $f);
         $sz[2] = files::size(filesize(dirname(__FILE__) . '/default-templates/img/' . $f));
 
         echo '
@@ -190,7 +189,7 @@ if (!empty($public_path)) {
 echo '<div class="one-box">';
 
 if (null !== ($default_image_path = noodlesLibImagePath::getPath($core, 'noodles'))) {
-    $sz = getimagesize($default_image_path);
+    $sz    = getimagesize($default_image_path);
     $sz[2] = files::size(filesize($default_image_path));
 
     echo '
@@ -217,8 +216,8 @@ if (!empty($public_path)) {
 }
 echo '
 <div class="fieldset box">
-<p>'. form::radio(['noodles_image', 'com_image'], 'gravatar.com', empty($default_image)) . '
-<label class="classic">' . __('API default image').'</label></p>
+<p>' . form::radio(['noodles_image', 'com_image'], 'gravatar.com', empty($default_image)) . '
+<label class="classic">' . __('API default image') . '</label></p>
 </div>';
 
 if (empty($public_path)) {
@@ -230,31 +229,32 @@ echo '
 <div class="fieldset"><h4>' . __('Behaviors') . '</h4>
 <div class="table-outer">
 <table><caption class="hidden">' . __('Behaviors list') . '</caption><tbody><tr>
-<th colspan="2" class="first">'.__('Search area').'</th>
-<th scope="col">'.__('Size').'</th>
-<th scope="col">'.__('Rating').'</th>
-<th scope="col">'.__('PHP').'</th>
-<th scope="col">'.__('JS').'</th>
-<th scope="col">'.__('Target').'</th>
-<th scope="col">'.__('Place').'</th>
-<th colspan="2" scope="col">'.__('Adjust avatar CSS').'</th>
+<th colspan="2" class="first">' . __('Search area') . '</th>
+<th scope="col">' . __('Size') . '</th>
+<th scope="col">' . __('Rating') . '</th>
+<th scope="col">' . __('PHP') . '</th>
+<th scope="col">' . __('JS') . '</th>
+<th scope="col">' . __('Target') . '</th>
+<th scope="col">' . __('Place') . '</th>
+<th colspan="2" scope="col">' . __('Adjust avatar CSS') . '</th>
 </tr>';
 
-foreach($__noodles->noodles() as $noodle) {
+foreach ($__noodles->noodles() as $noodle) {
     echo '
     <tr class="line">
     <td>' . form::checkbox(['noodle[' . $noodle->id() . '][active]', 'ck_' . $noodle->id()], 1, $noodle->active) . '</td>
-    <td class="nowrap" scope="row"><label for="ck_' . $noodle->id() .'">' . $noodle->name() . '</label></td>
+    <td class="nowrap" scope="row"><label for="ck_' . $noodle->id() . '">' . $noodle->name() . '</label></td>
     <td>' . form::combo(['noodle[' . $noodle->id() . '][size]'], $combo_size, $noodle->size) . '</td>
     <td>' . form::combo(['noodle[' . $noodle->id() . '][rating]'], $combo_rating, $noodle->rating) . '</td>
-    <td>' . ($noodle->hasPhpCallback() ? 
-        '<img alt="ok" src="images/check-on.png" />' : 
+    <td>' . (
+        $noodle->hasPhpCallback() ?
+        '<img alt="ok" src="images/check-on.png" />' :
         '<img alt="nok" src="images/check-off.png" />'
     ) . '</td>
     <td><img alt="ok" src="images/check-on.png" /></td>
     <td>' . form::field(['noodle[' . $noodle->id() . '][target]'], 20, 255, $noodle->target) . '</td>
-    <td>' . form::combo(['noodle[' . $noodle->id() . '][place]'], $combo_place, $noodle->place).'</td>
-    <td>' . form::field(['noodle[' . $noodle->id() . '][css]'], 50, 255, $noodle->css).'</td>
+    <td>' . form::combo(['noodle[' . $noodle->id() . '][place]'], $combo_place, $noodle->place) . '</td>
+    <td>' . form::field(['noodle[' . $noodle->id() . '][css]'], 50, 255, $noodle->css) . '</td>
     <td> .noodles-' . $noodle->id() . '{}</td>
     </tr>';
 }
