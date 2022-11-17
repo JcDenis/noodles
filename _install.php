@@ -1,12 +1,12 @@
 <?php
 /**
  * @brief noodles, a plugin for Dotclear 2
- * 
+ *
  * @package Dotclear
  * @subpackage Plugin
- * 
+ *
  * @author Jean-Christian Denis and contributors
- * 
+ *
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -14,16 +14,16 @@ if (!defined('DC_CONTEXT_ADMIN')) {
     return null;
 }
 
-$new_version = $core->plugins->moduleInfo('noodles', 'version');
-$old_version = $core->getVersion('noodles');
+$new_version = dcCore::app()->plugins->moduleInfo('noodles', 'version');
+$old_version = dcCore::app()->getVersion('noodles');
 
 if (version_compare($old_version, $new_version, '>=')) {
     return null;
 }
 
 try {
-    $core->blog->settings->addNamespace('noodles');
-    $core->blog->settings->noodles->put(
+    dcCore::app()->blog->settings->addNamespace('noodles');
+    dcCore::app()->blog->settings->noodles->put(
         'noodles_active',
         false,
         'boolean',
@@ -31,7 +31,7 @@ try {
         false,
         true
     );
-    $core->blog->settings->noodles->put(
+    dcCore::app()->blog->settings->noodles->put(
         'noodles_api',
         'http://www.gravatar.com/',
         'string',
@@ -39,7 +39,7 @@ try {
         false,
         true
     );
-    $core->blog->settings->noodles->put(
+    dcCore::app()->blog->settings->noodles->put(
         'noodles_image',
         '',
         'string',
@@ -47,7 +47,7 @@ try {
         false,
         true
     );
-    $core->blog->settings->noodles->put(
+    dcCore::app()->blog->settings->noodles->put(
         'noodles_object',
         '',
         'string',
@@ -55,11 +55,11 @@ try {
         false,
         true
     );
-    $core->setVersion('noodles', $new_version);
+    dcCore::app()->setVersion('noodles', $new_version);
 
     return true;
 } catch (Exception $e) {
-    $core->error->add($e->getMessage());
+    dcCore::app()->error->add($e->getMessage());
 }
 
 return false;

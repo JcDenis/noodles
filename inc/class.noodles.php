@@ -1,12 +1,12 @@
 <?php
 /**
  * @brief noodles, a plugin for Dotclear 2
- * 
+ *
  * @package Dotclear
  * @subpackage Plugin
- * 
+ *
  * @author Jean-Christian Denis and contributors
- * 
+ *
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -87,7 +87,7 @@ class noodle
         'rating' => 'g',
         'size'   => 16,
         'target' => '',
-        'place'  => 'prepend'
+        'place'  => 'prepend',
     ];
 
     public function __construct($id, $name, $js_callback, $php_callback = null)
@@ -122,13 +122,13 @@ class noodle
         return !empty($this->js_callback);
     }
 
-    public function phpCallback($core)
+    public function phpCallback()
     {
         if (!is_callable($this->php_callback)) {
             return null;
         }
 
-        return call_user_func($this->php_callback, $core, $this);
+        return call_user_func($this->php_callback, $this);
     }
 
     public function hasPhpCallback()
@@ -142,32 +142,32 @@ class noodle
             case 'active':
                 $this->settings['active'] = abs((int) $value);
 
-            break;
+                break;
 
             case 'rating':
                 $this->settings['rating'] = in_array($value, ['g', 'pg', 'r', 'x']) ? $value : 'g';
 
-            break;
+                break;
 
             case 'size':
                 $this->settings['size'] = in_array($value, [16, 24, 32, 48, 56, 64, 92, 128, 256]) ? $value : 16;
 
-            break;
+                break;
 
             case 'css':
                 $this->settings['css'] = (string) $value;
 
-            break;
+                break;
 
             case 'target':
                 $this->settings['target'] = (string) $value;
 
-            break;
+                break;
 
             case 'place':
                 $this->settings['place'] = in_array($value, ['append', 'prepend', 'before', 'after']) ? $value : 'prepend';
 
-            break;
+                break;
         }
 
         return $this;

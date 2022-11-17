@@ -1,12 +1,12 @@
 <?php
 /**
  * @brief noodles, a plugin for Dotclear 2
- * 
+ *
  * @package Dotclear
  * @subpackage Plugin
- * 
+ *
  * @author Jean-Christian Denis and contributors
- * 
+ *
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -14,11 +14,11 @@ if (!defined('DC_CONTEXT_ADMIN')) {
     return null;
 }
 
-dcPage::check('admin');
+dcPage::check(dcAuth::PERMISSION_CONTENT_ADMIN);
 
-include dirname(__FILE__) . '/inc/_default_noodles.php';
+include __DIR__ . '/inc/_default_noodles.php';
 
-$s = $core->blog->settings->noodles;
+$s = dcCore::app()->blog->settings->noodles;
 
 $__noodles = noodles::decode($s->noodles_object);
 if ($__noodles->isEmpty()) {
@@ -32,11 +32,11 @@ if ($__noodles->isEmpty()) {
         $__noodles->set($id, $noodle);
     }
 }
-$public_path = path::real($core->blog->public_path);
+$public_path = path::real(dcCore::app()->blog->public_path);
 if (!is_dir($public_path) || !is_writable($public_path)) {
     $public_path = false;
 }
-$default_images = files::scandir(dirname(__FILE__) . '/default-templates/img/');
+$default_images = files::scandir(__DIR__ . '/default-templates/img/');
 if (!is_array($default_images)) {
     $default_images = [];
 }
@@ -44,20 +44,20 @@ $default_image = $s->noodles_image;
 
 $combo_api = [
     'gravatar'   => 'http://www.gravatar.com/',
-    'libravatar' => 'http://cdn.libravatar.org/'
+    'libravatar' => 'http://cdn.libravatar.org/',
 ];
 
 $combo_place = [
     __('Begin')  => 'prepend',
     __('End')    => 'append',
     __('Before') => 'before',
-    __('After')  => 'after'
+    __('After')  => 'after',
 ];
 $combo_rating = [
     'G'  => 'g',
     'PG' => 'pg',
     'R'  => 'r',
-    'X'  => 'x'
+    'X'  => 'x',
 ];
 $combo_size = [
     '16px'  => 16,
@@ -68,7 +68,7 @@ $combo_size = [
     '64px'  => 64,
     '92px'  => 92,
     '128px' => 128,
-    '256px' => 256
+    '256px' => 256,
 ];
 
 if (!empty($_POST['save'])) {
@@ -94,7 +94,7 @@ if (!empty($_POST['save'])) {
                 throw new Exception(__('Failed to save image'));
             }
 
-            // Default gravatar.com avatar
+        // Default gravatar.com avatar
         } elseif ($_POST['noodles_image'] == 'gravatar.com') {
             $s->put('noodles_image', 0, 'boolean');
 
@@ -126,28 +126,28 @@ if (!empty($_POST['save'])) {
                 ->set('css', $bloc['css'] ?? '')
                 ->set('target', $bloc['target'] ?? '')
                 ->set('place', $bloc['place'] ?? 'prepend')
-                ;
+            ;
         }
         $s->put('noodles_object', $__noodles->encode(), 'string');
 
-        $core->blog->triggerBlog();
-        dcPage::addSuccessNotice(__('Configuration successfully updated'));
-        $core->adminurl->redirect('admin.plugin.noodles');
+        dcCore::app()->blog->triggerBlog();
+        dcAdminNotices::addSuccessNotice(__('Configuration successfully updated'));
+        dcCore::app()->adminurl->redirect('admin.plugin.noodles');
     } catch (Exception $e) {
-        $core->error->add($e->getMessage());
+        dcCore::app()->error->add($e->getMessage());
     }
 }
 
 echo '<html><head><title>' . __('Noodles') . '</title></head><body>' .
 dcPage::breadcrumb([
-    html::escapeHTML($core->blog->name) => '',
-    __('Noodles')                       => '',
-    __('Plugin configuration')          => ''
+    html::escapeHTML(dcCore::app()->blog->name) => '',
+    __('Noodles')                               => '',
+    __('Plugin configuration')                  => '',
 ]) .
 dcPage::notices() . '
 
 <form id="module_config" action="' .
-    $core->adminurl->get('admin.plugin.noodles') .
+    dcCore::app()->adminurl->get('admin.plugin.noodles') .
 '" method="post" enctype="multipart/form-data">
 <h3>' . sprintf(__('Configure "%s"'), __('Noodles')) . '</h3>
 <div class="fieldset"><h4>' . __('Activation') . '</h4>
@@ -188,7 +188,7 @@ if (!empty($public_path)) {
 
 echo '<div class="one-box">';
 
-if (null !== ($default_image_path = noodlesLibImagePath::getPath($core, 'noodles'))) {
+if (null !== ($default_image_path = noodlesLibImagePath::getPath('noodles'))) {
     $sz    = getimagesize($default_image_path);
     $sz[2] = files::size(filesize($default_image_path));
 
@@ -197,7 +197,7 @@ if (null !== ($default_image_path = noodlesLibImagePath::getPath($core, 'noodles
     <p>' . form::radio(['noodles_image', 'public_image'], 'existing', !empty($default_image)) . '
     <label class="classic" for="public_image">' . __('Blog default image') . '</label></p>
     <div class="two-box"><div class="box">
-    <p><img src="' . noodlesLibImagePath::getUrl($core, 'noodles') . '?' . rand() . '" alt="" /></p>
+    <p><img src="' . noodlesLibImagePath::getUrl('noodles') . '?' . rand() . '" alt="" /></p>
     </div><div class="box">
     <p>' . $sz[0] . 'x' . $sz[1] . '<br />' . $sz[2] . '</p>
     </div></div>
@@ -265,7 +265,7 @@ echo '
 
 <p class="clear">
 <input type="submit" value="' . __('Save') . ' (s)" accesskey="s" name="save" /> ' .
-$core->formNonce() . '</p>
+dcCore::app()->formNonce() . '</p>
 </form>
 
 </body></html>';

@@ -1,12 +1,12 @@
 <?php
 /**
  * @brief noodles, a plugin for Dotclear 2
- * 
+ *
  * @package Dotclear
  * @subpackage Plugin
- * 
+ *
  * @author Jean-Christian Denis and contributors
- * 
+ *
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -14,19 +14,19 @@ if (!defined('DC_RC_PATH')) {
     return null;
 }
 
-if (!$core->blog->settings->noodles->noodles_active) {
+if (!dcCore::app()->blog->settings->noodles->noodles_active) {
     return null;
 }
 
-include dirname(__FILE__) . '/inc/_default_noodles.php';
-require_once dirname(__FILE__) . '/inc/_noodles_functions.php';
+include __DIR__ . '/inc/_default_noodles.php';
+require_once __DIR__ . '/inc/_noodles_functions.php';
 
-$core->addBehavior('publicHeadContent', ['publicNoodles', 'publicHeadContent']);
+dcCore::app()->addBehavior('publicHeadContent', ['publicNoodles', 'publicHeadContent']);
 
-$core->tpl->setPath($core->tpl->getPath(), dirname(__FILE__) . '/default-templates');
+dcCore::app()->tpl->setPath(dcCore::app()->tpl->getPath(), __DIR__ . '/default-templates');
 
 global $__noodles;
-$__noodles = noodles::decode($core->blog->settings->noodles->noodles_object);
+$__noodles = noodles::decode(dcCore::app()->blog->settings->noodles->noodles_object);
 
 if ($__noodles->isEmpty()) {
     $__noodles = $__default_noodles;
@@ -36,18 +36,18 @@ if ($__noodles->isEmpty()) {
 
 foreach ($__noodles->noodles() as $noodle) {
     if ($noodle->active && $noodle->hasPhpCallback()) {
-        $noodle->phpCallback($core);
+        $noodle->phpCallback(dcCore::app());
     }
 }
 
 class publicNoodles
 {
-    public static function publicHeadContent($core)
+    public static function publicHeadContent()
     {
         echo
-            dcUtils::cssLoad($core->blog->url . $core->url->getURLFor('noodlescss')) .
-            dcUtils::jsLoad($core->blog->url . $core->url->getBase('noodlesmodule') . '/js/jquery.noodles.js') .
-            dcUtils::jsLoad($core->blog->url . $core->url->getURLFor('noodlesjs'));
+            dcUtils::cssLoad(dcCore::app()->blog->url . dcCore::app()->url->getURLFor('noodlescss')) .
+            dcUtils::jsLoad(dcCore::app()->blog->url . dcCore::app()->url->getBase('noodlesmodule') . '/js/jquery.noodles.js') .
+            dcUtils::jsLoad(dcCore::app()->blog->url . dcCore::app()->url->getURLFor('noodlesjs'));
     }
 }
 
@@ -55,7 +55,7 @@ class urlNoodles extends dcUrlHandlers
 {
     public static function css($args)
     {
-        global $core, $__noodles;
+        global $__noodles;
 
         $css = '';
         foreach ($__noodles->noodles() as $noodle) {
@@ -74,7 +74,7 @@ class urlNoodles extends dcUrlHandlers
 
     public static function js($args)
     {
-        global $core, $__noodles;
+        global $__noodles;
 
         $targets = [];
         foreach ($__noodles->noodles() as $noodle) {
@@ -91,7 +91,7 @@ class urlNoodles extends dcUrlHandlers
 
         echo
         "\$(function(){if(!document.getElementById){return;} \n" .
-        "\$.fn.noodles.defaults.service_url = '" . html::escapeJS($core->blog->url . $core->url->getBase('noodlesservice') . '/') . "'; \n" .
+        "\$.fn.noodles.defaults.service_url = '" . html::escapeJS(dcCore::app()->blog->url . dcCore::app()->url->getBase('noodlesservice') . '/') . "'; \n" .
         "\$.fn.noodles.defaults.service_func = '" . html::escapeJS('getNoodle') . "'; \n" .
         implode("\n", $targets) .
         "})\n";
@@ -101,8 +101,6 @@ class urlNoodles extends dcUrlHandlers
 
     public static function service($args)
     {
-        global $core;
-
         header('Content-Type: text/xml; charset=UTF-8');
 
         $rsp = new xmlTag('rsp');
@@ -110,23 +108,23 @@ class urlNoodles extends dcUrlHandlers
         $i = !empty($_POST['noodleId']) ? $_POST['noodleId'] : null;
         $c = !empty($_POST['noodleContent']) ? $_POST['noodleContent'] : null;
 
-        if (!$core->blog->settings->noodles->noodles_active) {
+        if (!dcCore::app()->blog->settings->noodles->noodles_active) {
             $rsp->status = 'failed';
             $rsp->message(__('noodles is disabled on this blog'));
-            echo $rsp->toXML(1);
+            echo $rsp->toXML(true);
 
             return false;
         }
         if ($i === null || $c === null) {
             $rsp->status = 'failed';
             $rsp->message(__('noodles failed because of missing informations'));
-            echo $rsp->toXML(1);
+            echo $rsp->toXML(true);
 
             return false;
         }
 
         try {
-            $__noodles = noodles::decode($core->blog->settings->noodles->noodles_object);
+            $__noodles = noodles::decode(dcCore::app()->blog->settings->noodles->noodles_object);
 
             if ($__noodles->isEmpty()) {
                 $__noodles = $GLOBALS['__default_noodles'];
@@ -134,7 +132,7 @@ class urlNoodles extends dcUrlHandlers
         } catch (Excetpion $e) {
             $rsp->status = 'failed';
             $rsp->message(__('Failed to load default noodles'));
-            echo $rsp->toXML(1);
+            echo $rsp->toXML(true);
 
             return false;
         }
@@ -142,7 +140,7 @@ class urlNoodles extends dcUrlHandlers
         if (!$__noodles->exists($i)) {
             $rsp->status = 'failed';
             $rsp->message(__('Failed to load noodle'));
-            echo $rsp->toXML(1);
+            echo $rsp->toXML(true);
 
             return false;
         }
@@ -150,10 +148,10 @@ class urlNoodles extends dcUrlHandlers
         $m = $__noodles->get($i)->jsCallback($__noodles->get($i), $c);
         $s = $__noodles->get($i)->size;
         $r = $__noodles->get($i)->rating;
-        $d = $core->blog->settings->noodles->noodles_image ?
-            urlencode(noodlesLibImagePath::getUrl($core, 'noodles')) : '';
+        $d = dcCore::app()->blog->settings->noodles->noodles_image ?
+            urlencode(noodlesLibImagePath::getUrl('noodles')) : '';
 
-        $u = $core->blog->settings->noodles->noodles_api;
+        $u = dcCore::app()->blog->settings->noodles->noodles_api;
         if (empty($u)) {
             $u = 'http://www.gravatar.com/';
         }
@@ -174,15 +172,13 @@ class urlNoodles extends dcUrlHandlers
         $rsp->insertNode($im);
 
         $rsp->status = 'ok';
-        echo $rsp->toXML(1);
+        echo $rsp->toXML(true);
         exit;
     }
 
     public static function noodles($args)
     {
-        global $core;
-
-        if (!$core->blog->settings->noodles->noodles_active) {
+        if (!dcCore::app()->blog->settings->noodles->noodles_active) {
             self::p404();
 
             return;
@@ -213,12 +209,12 @@ class urlNoodles extends dcUrlHandlers
         header('Content-Type: ' . $type . '; charset=UTF-8');
         header('Content-Length: ' . filesize($f));
 
-        if ($type != 'text/css' || $core->blog->settings->system->url_scan == 'path_info') {
+        if ($type != 'text/css' || dcCore::app()->blog->settings->system->url_scan == 'path_info') {
             readfile($f);
         } else {
             echo preg_replace(
                 '#url\((?!(http:)|/)#',
-                'url(' . $core->blog->url . $core->url->getBase('noodlesmodule') . '/',
+                'url(' . dcCore::app()->blog->url . dcCore::app()->url->getBase('noodlesmodule') . '/',
                 file_get_contents($f)
             );
         }
@@ -231,7 +227,7 @@ class urlNoodles extends dcUrlHandlers
         if (strstr($file, '..') !== false) {
             return false;
         }
-        $paths = $GLOBALS['core']->tpl->getPath();
+        $paths = dcCore::app()->tpl->getPath();
 
         foreach ($paths as $path) {
             if (preg_match('/tpl(\/|)$/', $path)) {

@@ -1,12 +1,12 @@
 <?php
 /**
  * @brief noodles, a plugin for Dotclear 2
- * 
+ *
  * @package Dotclear
  * @subpackage Plugin
- * 
+ *
  * @author Jean-Christian Denis and contributors
- * 
+ *
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
@@ -14,7 +14,7 @@ if (!defined('DC_RC_PATH')) {
     return null;
 }
 
-require dirname(__FILE__) . '/class.noodles.php';
+require __DIR__ . '/class.noodles.php';
 
 global $__default_noodles;
 $__default_noodles = new noodles();
@@ -38,7 +38,7 @@ $__default_noodles
     ->target('.post-title a')
     ->css('margin-right:2px;');
 
-if ($core->plugins->moduleExists('widgets')) {
+if (dcCore::app()->plugins->moduleExists('widgets')) {
     # Widget Selected entries
     $__default_noodles
         ->add('bestof', __('Selected entries'), ['genericNoodles', 'postURL'])
@@ -60,8 +60,8 @@ if ($core->plugins->moduleExists('widgets')) {
 }
 
 # Plugin auhtorMode
-if ($core->plugins->moduleExists('authorMode')
-    && $core->blog->settings->authormode->authormode_active
+if (dcCore::app()->plugins->moduleExists('authorMode')
+    && dcCore::app()->blog->settings->authormode->authormode_active
 ) {
     $__default_noodles
         ->add('authorswidget', __('Authors widget'), ['authormodeNoodles', 'authors'])
@@ -84,8 +84,8 @@ if ($core->plugins->moduleExists('authorMode')
 }
 
 # Plugin rateIt
-if ($core->plugins->moduleExists('rateIt')
-    && $core->blog->settings->rateit->rateit_active
+if (dcCore::app()->plugins->moduleExists('rateIt')
+    && dcCore::app()->blog->settings->rateit->rateit_active
 ) {
     $__default_noodles
         ->add('rateitpostsrank', __('Top rated entries'), ['genericNoodles', 'postURL'])
@@ -94,7 +94,7 @@ if ($core->plugins->moduleExists('rateIt')
 }
 
 # Plugin lastpostsExtend
-if ($core->plugins->moduleExists('lastpostsExtend')) {
+if (dcCore::app()->plugins->moduleExists('lastpostsExtend')) {
     $__default_noodles
         ->add('lastpostsextend', __('Last entries (extend)'), ['genericNoodles', 'postURL'])
         ->target('.lastpostsextend ul li a')
@@ -102,4 +102,4 @@ if ($core->plugins->moduleExists('lastpostsExtend')) {
 }
 
 # --BEHAVIOR-- initDefaultNoodles
-$core->callBehavior('initDefaultNoodles', $__default_noodles);
+dcCore::app()->callBehavior('initDefaultNoodles', $__default_noodles);
