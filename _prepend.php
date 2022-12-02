@@ -14,8 +14,10 @@ if (!defined('DC_RC_PATH')) {
     return null;
 }
 
-Clearbricks::lib()->autoload(['noodlesImg' => __DIR__ . '/inc/lib.noodles.img.php']);
-Clearbricks::lib()->autoload(['noodlesLibImagePath' => __DIR__ . '/inc/lib.image.path.php']);
+Clearbricks::lib()->autoload([
+    'noodlesImg'          => __DIR__ . '/inc/lib.noodles.img.php',
+    'noodlesLibImagePath' => __DIR__ . '/inc/lib.image.path.php',
+]);
 
 dcCore::app()->blog->settings->addNamespace('noodles');
 
