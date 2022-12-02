@@ -14,7 +14,7 @@ if (!defined('DC_CONTEXT_ADMIN')) {
     return null;
 }
 
-dcPage::check(dcAuth::PERMISSION_CONTENT_ADMIN);
+dcPage::check(dcCore::app()->auth->makePermissions([dcAuth::PERMISSION_CONTENT_ADMIN]));
 
 include __DIR__ . '/inc/_default_noodles.php';
 

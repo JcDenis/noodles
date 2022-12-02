@@ -17,7 +17,9 @@ $this->registerModule(
     '0.9',
     [
         'requires'    => [['core', '2.24']],
-        'permissions' => dcAuth::PERMISSION_CONTENT_ADMIN,
+        'permissions' => dcCore::app()->auth->makePermissions([
+            dcAuth::PERMISSION_CONTENT_ADMIN,
+        ]),
         'type'        => 'plugin',
         'support'     => 'https://github.com/JcDenis/noodles',
         'details'     => 'http://plugins.dotaddict.org/dc2/details/noodles',

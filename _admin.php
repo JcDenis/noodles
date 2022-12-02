@@ -18,6 +18,6 @@ dcCore::app()->menu[dcAdmin::MENU_PLUGINS]->addItem(
     __('Noodles'),
     dcCore::app()->adminurl->get('admin.plugin.noodles'),
     dcPage::getPF('noodles/icon.png'),
-    preg_match('/noodles(&.*)?$/', $_SERVER['REQUEST_URI']),
-    dcCore::app()->auth->check(dcAuth::PERMISSION_CONTENT_ADMIN, dcCore::app()->blog->id)
+    preg_match('/' . preg_quote(dcCore::app()->adminurl->get('admin.plugin.noodles')) . '(&.*)?$/', $_SERVER['REQUEST_URI']),
+    dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([dcAuth::PERMISSION_CONTENT_ADMIN]), dcCore::app()->blog->id)
 );
