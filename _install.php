@@ -14,14 +14,15 @@ if (!defined('DC_CONTEXT_ADMIN')) {
     return null;
 }
 
-$new_version = dcCore::app()->plugins->moduleInfo('noodles', 'version');
-$old_version = dcCore::app()->getVersion('noodles');
-
-if (version_compare($old_version, $new_version, '>=')) {
-    return null;
-}
-
 try {
+    if (version_compare(
+        dcCore::app()->getVersion('noodles'),
+        dcCore::app()->plugins->moduleInfo('noodles', 'version'),
+        '>='
+    )) {
+        return null;
+    }
+
     dcCore::app()->blog->settings->addNamespace('noodles');
     dcCore::app()->blog->settings->noodles->put(
         'noodles_active',
@@ -55,7 +56,6 @@ try {
         false,
         true
     );
-    dcCore::app()->setVersion('noodles', $new_version);
 
     return true;
 } catch (Exception $e) {
