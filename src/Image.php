@@ -10,18 +10,25 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-if (!defined('DC_RC_PATH')) {
-    return null;
-}
+declare(strict_types=1);
 
-class noodlesLibImagePath
+namespace Dotclear\Plugin\noodles;
+
+use dcCore;
+use Dotclear\Helper\File\Path;
+
+class Image
 {
-    public static $version = '1.1';
+    /** @var    string  The current class major version */
+    public const VERSION = '2';
 
-    public static function getArray($m = '')
+    /**
+     * @return  array<string, array{dir: null|string, url: null|string}>    The Image possible paths
+     */
+    public static function getArray(): array
     {
-        if (!dcCore::app()->plugins->moduleExists($m)
-            || !dcCore::app()->url->getBase($m . 'module')
+        if (is_null(dcCore::app()->blog)
+            || !dcCore::app()->url->getBase('noodles_file')
         ) {
             return [
                 'theme'  => ['dir' => null, 'url' => null],
@@ -30,27 +37,35 @@ class noodlesLibImagePath
             ];
         }
 
+        $public_url = dcCore::app()->blog->settings->get('system')->get('public_url');
+        if (!is_string($public_url)) {
+            $public_url = '';
+        }
+
         return [
             'theme' => [
-                'dir' => path::real(dcCore::app()->blog->themes_path . '/' . dcCore::app()->blog->settings->system->theme . '/img') . '/' . $m . '-default-image.png',
-                'url' => dcCore::app()->blog->settings->system->themes_url . dcCore::app()->blog->settings->system->theme . '/img/' . $m . '-default-image.png',
+                'dir' => Path::real(dcCore::app()->blog->themes_path . '/' . dcCore::app()->blog->settings->get('system')->get('theme') . '/img') . '/' . My::IMAGE,
+                'url' => dcCore::app()->blog->settings->get('system')->get('themes_url') . dcCore::app()->blog->settings->get('system')->get('theme') . '/img/' . My::IMAGE,
             ],
             'public' => [
-                'dir' => path::real(dcCore::app()->blog->public_path) . '/' . $m . '-default-image.png',
-                'url' => dcCore::app()->blog->host . path::clean(dcCore::app()->blog->settings->system->public_url) . '/' . $m . '-default-image.png',
+                'dir' => Path::real(dcCore::app()->blog->public_path) . '/' . My::IMAGE,
+                'url' => dcCore::app()->blog->host . Path::clean($public_url) . '/' . My::IMAGE,
             ],
             'module' => [
-                'dir' => path::real(dcCore::app()->plugins->moduleRoot($m) . '/default-templates/img') . '/' . $m . '-default-image.png',
-                'url' => dcCore::app()->blog->url . dcCore::app()->url->getBase($m . 'module') . '/img/' . $m . '-default-image.png',
+                'dir' => Path::real(My::path() . '/default-templates/img') . '/' . My::IMAGE,
+                'url' => dcCore::app()->blog->url . dcCore::app()->url->getBase('noodles_file') . '/img/' . My::IMAGE,
             ],
         ];
     }
 
-    public static function getUrl($m = '')
+    /**
+     * @return  null|string  The image URL
+     */
+    public static function getUrl(): ?string
     {
-        $files = self::getArray($m);
+        $files = self::getArray();
         foreach ($files as $k => $file) {
-            if (file_exists($files[$k]['dir'])) {
+            if (is_string($files[$k]['dir']) && file_exists($files[$k]['dir'])) {
                 return $files[$k]['url'];
             }
         }
@@ -58,25 +73,18 @@ class noodlesLibImagePath
         return null;
     }
 
-    public static function getPath($m = '')
+    /**
+     * @return  null|string  The image path
+     */
+    public static function getPath(): ?string
     {
-        $files = self::getArray($m);
+        $files = self::getArray();
         foreach ($files as $k => $file) {
-            if (file_exists($files[$k]['dir'])) {
+            if (is_string($files[$k]['dir']) && file_exists($files[$k]['dir'])) {
                 return $files[$k]['dir'];
             }
         }
 
         return null;
-    }
-
-    public static function getSize($m = '')
-    {
-        if (!($img = self::getPath($m))) {
-            return ['w' => 16, 'h' => 16];
-        }
-        $info = getimagesize($img);
-
-        return ['w' => $info[0], 'h' => floor($info[1] / 3)];
     }
 }

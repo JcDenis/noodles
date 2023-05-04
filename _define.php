@@ -10,6 +10,10 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
+if (!class_exists('dcCore') || is_null(dcCore::app()->auth)) {
+    return null;
+}
+
 $this->registerModule(
     'Noodles',
     'Add users gravatars everywhere',
@@ -18,13 +22,13 @@ $this->registerModule(
     [
         'requires'    => [['core', '2.24']],
         'permissions' => dcCore::app()->auth->makePermissions([
-            dcAuth::PERMISSION_CONTENT_ADMIN,
+            dcCore::app()->auth::PERMISSION_CONTENT_ADMIN,
         ]),
-        'type'        => 'plugin',
-        'support'     => 'https://github.com/JcDenis/noodles',
-        'details'     => 'http://plugins.dotaddict.org/dc2/details/noodles',
-        'repository'  => 'https://raw.githubusercontent.com/JcDenis/noodles/master/dcstore.xml',
-        'settings'    => [
+        'type'       => 'plugin',
+        'support'    => 'https://github.com/JcDenis/' . basename(__DIR__),
+        'details'    => 'http://plugins.dotaddict.org/dc2/details/' . basename(__DIR__),
+        'repository' => 'https://raw.githubusercontent.com/JcDenis/' . basename(__DIR__) . '/master/dcstore.xml',
+        'settings'   => [
             'self' => '',
         ],
     ]

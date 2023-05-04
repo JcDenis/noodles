@@ -10,62 +10,48 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-if (!defined('DC_CONTEXT_ADMIN')) {
-    return null;
-}
+declare(strict_types=1);
 
-$mod_conf = [
-    [
-        'noodles_active',
-        false,
-        'boolean',
-        'Enable extension',
-    ],
-    [
-        'noodles_api',
-        'http://www.gravatar.com/',
-        'string',
-        'external API to use',
-    ],
-    [
-        'noodles_image',
-        '',
-        'string',
-        'Image filename',
-    ],
-    [
-        'noodles_object',
-        '',
-        'string',
-        'Noodles behaviors',
-    ],
-];
+namespace Dotclear\Plugin\noodles;
 
-# -- Nothing to change below --
-try {
-    # Check module version
-    if (!dcCore::app()->newVersion(
-        basename(__DIR__), 
-        dcCore::app()->plugins->moduleInfo(basename(__DIR__), 'version')
-    )) {
-        return null;
-    }
-    # Set module settings
-    dcCore::app()->blog->settings->addNamespace(basename(__DIR__));
-    foreach ($mod_conf as $v) {
-        dcCore::app()->blog->settings->__get(basename(__DIR__))->put(
-            $v[0],
-            $v[1],
-            $v[2],
-            $v[3],
-            false,
-            true
-        );
+use dcCore;
+use dcNsProcess;
+use Exception;
+
+class Install extends dcNsProcess
+{
+    public static function init(): bool
+    {
+        static::$init = defined('DC_CONTEXT_ADMIN')
+            && My::phpCompliant()
+            && is_string(dcCore::app()->plugins->moduleInfo(My::id(), 'version'))
+            && dcCore::app()->newVersion(My::id(), dcCore::app()->plugins->moduleInfo(My::id(), 'version'));
+
+        return static::$init;
     }
 
-    return true;
-} catch (Exception $e) {
-    dcCore::app()->error->add($e->getMessage());
+    public static function process(): bool
+    {
+        if (!static::$init) {
+            return false;
+        }
 
-    return false;
+        try {
+            $s = dcCore::app()->blog?->settings->get(My::id());
+            if (is_null($s)) {
+                return false;
+            }
+            # Set module settings
+            $s->put('active', false, 'boolean', 'enable module', false, true);
+            $s->put('api', 'http://www.gravatar.com/', 'string', 'external API', false, true);
+            $s->put('local', false, 'boolean', 'use local image', false, true);
+            $s->put('settings', '[]', 'string', 'noodles settings', false, true);
+
+            return true;
+        } catch (Exception $e) {
+            dcCore::app()->error->add($e->getMessage());
+
+            return false;
+        }
+    }
 }

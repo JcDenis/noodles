@@ -18,27 +18,25 @@ use dcCore;
 use Dotclear\Plugin\noodles\Target;
 
 /**
- * Target generic rendering.
+ * Target rendering adapt to plugin Widgets.
  */
-class Generic
+class Widgets
 {
-    public static function postURL(Target $target, string $content = ''): string
+    public static function lastcomments(Target $target, string $content = ''): string
     {
         if (is_null(dcCore::app()->blog)) {
             return '';
         }
-        $types = dcCore::app()->getPostTypes();
-        $reg   = '@^' . str_replace('%s', '(.*?)', preg_quote(dcCore::app()->blog->url . $types['post']['public_url'])) . '$@';
-        $ok    = preg_match($reg, $content, $m);
+        $ok = preg_match('@\#c([0-9]+)$@', urldecode($content), $m);
         if (!$ok || !$m[1]) {
             return '';
         }
-        $rs = dcCore::app()->blog->getPosts(['no_content' => 1, 'post_url' => urldecode($m[1]), 'limit' => 1]);
+        $rs = dcCore::app()->blog->getComments(['no_content' => 1, 'comment_id' => $m[1], 'limit' => 1]);
         if ($rs->isEmpty()) {
             return '';
         }
 
-        $res = $rs->f('user_email');
+        $res = $rs->f('comment_email');
 
         return is_string($res) ? $res : '';
     }

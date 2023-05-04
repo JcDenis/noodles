@@ -10,234 +10,54 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-if (!defined('DC_RC_PATH')) {
-    return null;
-}
+declare(strict_types=1);
 
-if (!dcCore::app()->blog->settings->noodles->noodles_active) {
-    return null;
-}
+namespace Dotclear\Plugin\noodles;
 
-include __DIR__ . '/inc/_default_noodles.php';
-require_once __DIR__ . '/inc/_noodles_functions.php';
+use dcCore;
+use dcNsProcess;
+use dcUtils;
 
-dcCore::app()->addBehavior('publicHeadContent', ['publicNoodles', 'publicHeadContent']);
-
-dcCore::app()->tpl->setPath(dcCore::app()->tpl->getPath(), __DIR__ . '/default-templates');
-
-global $__noodles;
-$__noodles = noodles::decode(dcCore::app()->blog->settings->noodles->noodles_object);
-
-if ($__noodles->isEmpty()) {
-    $__noodles = $__default_noodles;
-}
-
-//$GLOBALS['__noodles'] =& $__noodles;
-
-foreach ($__noodles->noodles() as $noodle) {
-    if ($noodle->active && $noodle->hasPhpCallback()) {
-        $noodle->phpCallback(dcCore::app());
-    }
-}
-
-class publicNoodles
+class Frontend extends dcNsProcess
 {
-    public static function publicHeadContent()
+    public static function init(): bool
     {
-        echo
-            dcUtils::cssLoad(dcCore::app()->blog->url . dcCore::app()->url->getURLFor('noodlescss')) .
-            dcUtils::jsLoad(dcCore::app()->blog->url . dcCore::app()->url->getBase('noodlesmodule') . '/js/jquery.noodles.js') .
-            dcUtils::jsLoad(dcCore::app()->blog->url . dcCore::app()->url->getURLFor('noodlesjs'));
-    }
-}
+        static::$init = My::phpCompliant();
 
-class urlNoodles extends dcUrlHandlers
-{
-    public static function css($args)
-    {
-        global $__noodles;
-
-        $css = '';
-        foreach ($__noodles->noodles() as $noodle) {
-            if (!$noodle->active || !$noodle->hasJsCallback()) {
-                continue;
-            }
-            $css .= '.noodles-' . $noodle->id() . '{' . $noodle->css . '}' . "\n";
-        }
-
-        header('Content-Type: text/css; charset=UTF-8');
-
-        echo $css;
-
-        exit;
+        return static::$init;
     }
 
-    public static function js($args)
+    public static function process(): bool
     {
-        global $__noodles;
-
-        $targets = [];
-        foreach ($__noodles->noodles() as $noodle) {
-            if (!$noodle->active || !$noodle->hasJsCallback()) {
-                continue;
-            }
-            $targets[] = '$(\'' . html::escapeJS($noodle->target) . '\').noodles({' .
-                '  imgId:\'' . html::escapeJS($noodle->id()) . '\',' .
-                '  imgPlace:\'' . html::escapeJS($noodle->place) . '\'' .
-                '});';
-        }
-
-        header('Content-Type: text/javascript; charset=UTF-8');
-
-        echo
-        "\$(function(){if(!document.getElementById){return;} \n" .
-        "\$.fn.noodles.defaults.service_url = '" . html::escapeJS(dcCore::app()->blog->url . dcCore::app()->url->getBase('noodlesservice') . '/') . "'; \n" .
-        "\$.fn.noodles.defaults.service_func = '" . html::escapeJS('getNoodle') . "'; \n" .
-        implode("\n", $targets) .
-        "})\n";
-
-        exit;
-    }
-
-    public static function service($args)
-    {
-        header('Content-Type: text/xml; charset=UTF-8');
-
-        $rsp = new xmlTag('rsp');
-
-        $i = !empty($_POST['noodleId']) ? $_POST['noodleId'] : null;
-        $c = !empty($_POST['noodleContent']) ? $_POST['noodleContent'] : null;
-
-        if (!dcCore::app()->blog->settings->noodles->noodles_active) {
-            $rsp->status = 'failed';
-            $rsp->message(__('noodles is disabled on this blog'));
-            echo $rsp->toXML(true);
-
-            return false;
-        }
-        if ($i === null || $c === null) {
-            $rsp->status = 'failed';
-            $rsp->message(__('noodles failed because of missing informations'));
-            echo $rsp->toXML(true);
-
+        if (!static::$init) {
             return false;
         }
 
-        try {
-            $__noodles = noodles::decode(dcCore::app()->blog->settings->noodles->noodles_object);
+        $targets = Targets::instance();
 
-            if ($__noodles->isEmpty()) {
-                $__noodles = $GLOBALS['__default_noodles'];
-            }
-        } catch (Excetpion $e) {
-            $rsp->status = 'failed';
-            $rsp->message(__('Failed to load default noodles'));
-            echo $rsp->toXML(true);
-
+        if (!$targets->active) {
             return false;
         }
 
-        if (!$__noodles->exists($i)) {
-            $rsp->status = 'failed';
-            $rsp->message(__('Failed to load noodle'));
-            echo $rsp->toXML(true);
+        dcCore::app()->tpl->setPath(dcCore::app()->tpl->getPath(), My::path() . '/default-templates');
 
-            return false;
-        }
-
-        $m = $__noodles->get($i)->jsCallback($__noodles->get($i), $c);
-        $s = $__noodles->get($i)->size;
-        $r = $__noodles->get($i)->rating;
-        $d = dcCore::app()->blog->settings->noodles->noodles_image ?
-            urlencode(noodlesLibImagePath::getUrl('noodles')) : '';
-
-        $u = dcCore::app()->blog->settings->noodles->noodles_api;
-        if (empty($u)) {
-            $u = 'http://www.gravatar.com/';
-        }
-        if (!$m) {
-            $m = 'nobody@nowhere.tld';
-        }
-        if (!$s) {
-            $s = 32;
-        }
-        if (!$r) {
-            $r = 'g';
-        }
-
-        $m        = md5(strtolower(trim($m)));
-        $im       = new xmlTag('noodle');
-        $im->size = $s;
-        $im->src  = sprintf('%savatar/%s?s=%s&amp;r=%s&amp;d=%s', $u, $m, $s, $r, $d);
-        $rsp->insertNode($im);
-
-        $rsp->status = 'ok';
-        echo $rsp->toXML(true);
-        exit;
-    }
-
-    public static function noodles($args)
-    {
-        if (!dcCore::app()->blog->settings->noodles->noodles_active) {
-            self::p404();
-
-            return;
-        }
-
-        if (!preg_match('#^(.*?)$#', $args, $m)) {
-            self::p404();
-
-            return;
-        }
-
-        $f = $m[1];
-
-        if (!($f = self::searchTplFiles($f))) {
-            self::p404();
-
-            return;
-        }
-
-        $allowed_types = ['png', 'jpg', 'jpeg', 'gif', 'css', 'js', 'swf'];
-        if (!in_array(files::getExtension($f), $allowed_types)) {
-            self::p404();
-
-            return;
-        }
-        $type = files::getMimeType($f);
-
-        header('Content-Type: ' . $type . '; charset=UTF-8');
-        header('Content-Length: ' . filesize($f));
-
-        if ($type != 'text/css' || dcCore::app()->blog->settings->system->url_scan == 'path_info') {
-            readfile($f);
-        } else {
-            echo preg_replace(
-                '#url\((?!(http:)|/)#',
-                'url(' . dcCore::app()->blog->url . dcCore::app()->url->getBase('noodlesmodule') . '/',
-                file_get_contents($f)
-            );
-        }
-        exit;
-    }
-
-    # Search noodles files like JS, CSS in default-templates subdirectories
-    private static function searchTplFiles($file)
-    {
-        if (strstr($file, '..') !== false) {
-            return false;
-        }
-        $paths = dcCore::app()->tpl->getPath();
-
-        foreach ($paths as $path) {
-            if (preg_match('/tpl(\/|)$/', $path)) {
-                $path = path::real($path . '/..');
-            }
-            if (file_exists($path . '/' . $file)) {
-                return $path . '/' . $file;
+        foreach ($targets->dump() as $target) {
+            if ($target->active() && $target->hasPhpCallback()) {
+                $target->phpCallback();
             }
         }
 
-        return false;
+        dcCore::app()->addBehavior('publicHeadContent', function (): void {
+            if (is_null(dcCore::app()->blog)) {
+                return;
+            }
+
+            echo
+                dcUtils::cssLoad(dcCore::app()->blog->url . dcCore::app()->url->getURLFor('noodles_css')) .
+                dcUtils::jsLoad(dcCore::app()->blog->url . dcCore::app()->url->getBase('noodles_file') . '/js/jquery.noodles.js') .
+                dcUtils::jsLoad(dcCore::app()->blog->url . dcCore::app()->url->getURLFor('noodles_js'));
+        });
+
+        return true;
     }
 }

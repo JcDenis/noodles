@@ -10,50 +10,63 @@
  * @copyright Jean-Christian Denis
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-if (!defined('DC_CONTEXT_ADMIN')) {
-    return null;
+declare(strict_types=1);
+
+namespace Dotclear\Plugin\noodles;
+
+use dcCore;
+use dcNsProcess;
+use Dotclear\Plugin\Uninstaller\Uninstaller;
+
+class Uninstall extends dcNsProcess
+{
+    public static function init(): bool
+    {
+        static::$init = defined('DC_CONTEXT_ADMIN');
+
+        return static::$init;
+    }
+
+    public static function process(): bool
+    {
+        if (!static::$init || !dcCore::app()->plugins->moduleExists('Uninstaller')) {
+            return false;
+        }
+
+        Uninstaller::instance()
+            ->addUserAction(
+                'settings',
+                'delete_all',
+                My::id()
+            )
+            ->addUserAction(
+                'plugins',
+                'delete',
+                My::id()
+            )
+            ->addUserAction(
+                'versions',
+                'delete',
+                My::id()
+            )
+            ->addDirectAction(
+                'settings',
+                'delete_all',
+                My::id()
+            )
+            ->addDirectAction(
+                'plugins',
+                'delete',
+                My::id()
+            )
+            ->addDirectAction(
+                'versions',
+                'delete',
+                My::id()
+            )
+        ;
+
+        // no custom action
+        return false;
+    }
 }
-
-$this->addUserAction(
-    /* type */
-    'settings',
-    /* action */
-    'delete_all',
-    /* ns */
-    'noodles',
-    /* description */
-    __('delete all settings')
-);
-
-$this->addUserAction(
-    /* type */
-    'plugins',
-    /* action */
-    'delete',
-    /* ns */
-    'noodles',
-    /* description */
-    __('delete plugin files')
-);
-
-$this->addDirectAction(
-    /* type */
-    'settings',
-    /* action */
-    'delete_all',
-    /* ns */
-    'noodles',
-    /* description */
-    sprintf(__('delete all %s settings'), 'noodles')
-);
-
-$this->addDirectAction(
-    /* type */
-    'plugins',
-    /* action */
-    'delete',
-    /* ns */
-    'noodles',
-    /* description */
-    sprintf(__('delete %s plugin files'), 'noodles')
-);
