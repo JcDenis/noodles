@@ -1,90 +1,94 @@
+# Language: Français
+# Module: noodles - 0.9
+# Date: 2023-05-04 20:55:58
+# Author: Jean-Christian Denis
+# Translated with translater 2023.04.23
+
 msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
-"Project-Id-Version: noodles 0.7.1\n"
+"Project-Id-Version: noodles 0.9\n"
 "POT-Creation-Date: \n"
-"PO-Revision-Date: 2021-10-30T20:41:09+00:00\n"
+"PO-Revision-Date: 2023-05-04T20:55:58+00:00\n"
 "Last-Translator: Jean-Christian Denis\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-msgid "Entries titles"
-msgstr "Titres des billets"
+#: src/Combo.php:37
+msgid "Local"
+msgstr "Locale"
 
-msgid "Authors widget"
-msgstr "Widgets des auteurs"
-
+#: src/Combo.php:47
 msgid "Begin"
 msgstr "Début"
 
+#: src/Combo.php:48
 msgid "End"
 msgstr "Fin"
 
+#: src/Combo.php:49
 msgid "Before"
 msgstr "Avant"
 
+#: src/Combo.php:50
 msgid "After"
 msgstr "Après"
 
-msgid "Maximum file size exceeded"
-msgstr "Taille maximum de fichier dépassée"
+#: src/Manage.php:103
+msgid "Local default avatar is not reachable!"
+msgstr "L'avatar local par défaut n'est pas accessible !"
 
-msgid "Something went wrong while download file"
-msgstr "Une erreur est survenue lors du téléchargement de l'image"
+#: src/Manage.php:105
+msgid "See local default avatar."
+msgstr "Voir l'avatar local par défaut."
 
-msgid "Image must be in png format"
-msgstr "L'image doit être au format png"
-
-msgid "Failed to save image"
-msgstr "Impossible de sauvegarder l'image"
-
-msgid "Something went wrong while search file"
-msgstr "Une erreur est survenue pendant la recherche de fichier"
-
+#: src/Manage.php:124
 msgid "Enable plugin noodles on this blog"
 msgstr "Activer le plugin Noodles sur ce blog"
 
-msgid "Select default avatar to display on unknown users."
-msgstr "Selectionner l'avatar par défaut à afficher pour les utilisateurs inconnus."
+#: src/Manage.php:125
+msgid "Image API:"
+msgstr "API des avatars :"
 
-msgid "Blog default image"
-msgstr "Image du blog"
+#: src/Manage.php:127
+msgid "Default image:"
+msgstr "Avatar par défaut :"
 
-msgid "Upload a new avatar"
-msgstr "Téléverser un nouvel avatar"
+#: src/Manage.php:130
+msgid "You can add your own default avatar by adding file \"%s\" in media manager."
+msgstr "Vous pouvez ajouter votr epropre avatar par défaut en ajoutant un fichier \"%s\" au gestionnaire de média."
 
-msgid "Image must be in \"png\" format and have a maximum file size of 30Ko"
-msgstr "L'image doit être au format \"png\" et avoir une taille maximum de 30Ko"
-
-msgid "API default image"
-msgstr "Image par défaut de l'API"
-
-msgid "Public directory is not writable, you can not use custom gravatar."
-msgstr "Le répertoire public n'est pas accissble en écriture, vous ne pouvez pas utiliser les avatars customisés"
-
+#: src/Manage.php:136
 msgid "Search area"
 msgstr "Zone de recherche"
 
-msgid "Size"
-msgstr "Taille"
-
+#: src/Manage.php:138
 msgid "Rating"
 msgstr "Évaluation"
 
+#: src/Manage.php:141
 msgid "Target"
 msgstr "Cible"
 
+#: src/Manage.php:142
 msgid "Place"
 msgstr "Emplacement"
 
+#: src/Manage.php:143
 msgid "Adjust avatar CSS"
 msgstr "Ajuster la CSS de l'image"
 
+#: src/Manage.php:167
 msgid "Target and Place are for javascript."
 msgstr "Les cible et emplacement sont utilisés par les scripts javascript."
 
-msgid "Add users gravatars everywhere"
-msgstr "Ajouter les avatars partout"
+#: src/Targets.php:212
+msgid "Entries titles"
+msgstr "Titres des billets"
+
+#: src/Targets.php:262
+msgid "Authors widget"
+msgstr "Widgets des auteurs"
 
