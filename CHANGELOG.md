@@ -2,6 +2,16 @@ dev
 - [ ] add cache system
 - [ ] add option for gravatar built in unknow avatar @see https://fr.gravatar.com/site/implement/images/
 
+1.0 - 2023.05.05
+- require dotclear 2.26
+- require php 8.1+
+- use namespace
+- fix phpstan level 9 warnings
+- use short settings names (lost old settings)
+- use json rather than serialize (lost old settings)
+- use only one default avatar
+- add plugin UNinstaller features
+
 0.9 - 2022.11.20
 - fix compatibility with Dotclear 2.24 (required)
 
