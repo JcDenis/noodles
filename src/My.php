@@ -17,18 +17,18 @@ namespace Dotclear\Plugin\noodles;
 use dcCore;
 
 /**
- * Plugin definitions
+ * This module definitions.
  */
 class My
 {
-    /** @var    string  Required php version */
-    public const PHP_MIN = '8.1';
-
     /** @var    string  Default image name */
     public const IMAGE = 'default-avatar.png';
 
+    /** @var    string  This module required php version */
+    public const PHP_MIN = '8.1';
+
     /**
-     * This module id
+     * This module id.
      */
     public static function id(): string
     {
@@ -36,7 +36,7 @@ class My
     }
 
     /**
-     * This module name
+     * This module name.
      */
     public static function name(): string
     {
@@ -46,7 +46,7 @@ class My
     }
 
     /**
-     * This module path
+     * This module path.
      */
     public static function path(): string
     {
@@ -54,7 +54,7 @@ class My
     }
 
     /**
-     * Check php version
+     * Check this module PHP version compliant.
      */
     public static function phpCompliant(): bool
     {
