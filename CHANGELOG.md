@@ -2,6 +2,11 @@ dev
 - [ ] add cache system
 - [ ] add option for gravatar built in unknow avatar @see https://fr.gravatar.com/site/implement/images/
 
+1.0.1 - 2023.05.13
+- require dotclear 2.26
+- require php 8.1+
+- use define php_min
+
 1.0 - 2023.05.05
 - require dotclear 2.26
 - require php 8.1+

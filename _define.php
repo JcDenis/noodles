@@ -18,7 +18,7 @@ $this->registerModule(
     'Noodles',
     'Add users gravatars everywhere',
     'Jean-Christian Denis and contributors',
-    '1.0',
+    '1.0.1',
     [
         'requires' => [
             ['php', '8.1'],
