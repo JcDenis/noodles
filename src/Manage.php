@@ -15,8 +15,11 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\noodles;
 
 use dcCore;
-use dcNsProcess;
-use dcPage;
+use Dotclear\Core\Backend\{
+    Notices,
+    Page
+};
+use Dotclear\Core\Process;
 use Dotclear\Helper\Html\Form\{
     Checkbox,
     Div,
@@ -30,27 +33,21 @@ use Dotclear\Helper\Html\Form\{
 };
 use Exception;
 
-class Manage extends dcNsProcess
+class Manage extends Process
 {
     public static function init(): bool
     {
-        static::$init = defined('DC_CONTEXT_ADMIN')
-            && !is_null(dcCore::app()->auth) && !is_null(dcCore::app()->blog)
-            && dcCore::app()->auth->check(dcCore::app()->auth->makePermissions([
-                dcCore::app()->auth::PERMISSION_CONTENT_ADMIN,
-            ]), dcCore::app()->blog->id);
-
-        return static::$init;
+        return self::status(My::checkContext(My::MANAGE));
     }
 
     public static function process(): bool
     {
-        if (!static::$init) {
+        if (!self::status()) {
             return false;
         }
 
         // nullsafe check
-        if (is_null(dcCore::app()->blog) || is_null(dcCore::app()->adminurl)) {
+        if (is_null(dcCore::app()->blog)) {
             return false;
         }
 
@@ -58,7 +55,7 @@ class Manage extends dcNsProcess
             return true;
         }
 
-        $s       = dcCore::app()->blog->settings->get(My::id());
+        $s       = My::settings();
         $targets = Targets::instance();
 
         try {
@@ -85,8 +82,8 @@ class Manage extends dcNsProcess
             $targets->export();
 
             dcCore::app()->blog->triggerBlog();
-            dcPage::addSuccessNotice(__('Configuration successfully updated'));
-            dcCore::app()->adminurl->redirect('admin.plugin.noodles');
+            Notices::addSuccessNotice(__('Configuration successfully updated'));
+            My::redirect();
         } catch (Exception $e) {
             dcCore::app()->error->add($e->getMessage());
         }
@@ -96,12 +93,12 @@ class Manage extends dcNsProcess
 
     public static function render(): void
     {
-        if (!static::$init) {
+        if (!self::status()) {
             return;
         }
 
         // nullsafe check
-        if (is_null(dcCore::app()->blog) || is_null(dcCore::app()->adminurl)) {
+        if (is_null(dcCore::app()->blog)) {
             return;
         }
 
@@ -113,16 +110,16 @@ class Manage extends dcNsProcess
             $note = '<a href="' . Image::getURL() . '">' . __('See local default avatar.') . '</a>';
         }
 
-        dcPage::openModule(My::name());
+        Page::openModule(My::name());
 
         echo
-        dcPage::breadcrumb([
+        Page::breadcrumb([
             __('Plugin') => '',
             My::name()   => '',
         ]) .
-        dcPage::notices() . '
+        Notices::getNotices() . '
 
-        <form id="module_config" action="' . dcCore::app()->adminurl->get('admin.plugin.' . My::id()) . '" method="post" enctype="multipart/form-data">
+        <form id="module_config" action="' . My::manageUrl() . '" method="post" enctype="multipart/form-data">
         <h3>' . sprintf(__('Configure "%s"'), __('Noodles')) . '</h3>' .
         (new Div())
             ->class('fieldset')
@@ -200,11 +197,11 @@ class Manage extends dcNsProcess
             ->class('clear')
             ->items([
                 (new Submit('save', __('Save') . ' (s)'))->accesskey('s'),
-                dcCore::app()->formNonce(false),
+                ... My::hiddenFields(),
             ])
             ->render() . '
         </form>';
 
-        dcPage::closeModule();
+        Page::closeModule();
     }
 }

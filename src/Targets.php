@@ -44,12 +44,10 @@ final class Targets
     {
         // try to read main settings
         $active = $api = $local = null;
-        if (!is_null(dcCore::app()->blog)) {
-            $s      = dcCore::app()->blog->settings->get(My::id());
-            $active = $s->get('active');
-            $api    = $s->get('api');
-            $local  = $s->get('local');
-        }
+        $s      = My::settings();
+        $active = $s->get('active');
+        $api    = $s->get('api');
+        $local  = $s->get('local');
 
         // set main settings
         $this->active = is_bool($active) ? $active : false;
@@ -95,7 +93,7 @@ final class Targets
      */
     public function import(): void
     {
-        $s = dcCore::app()->blog?->settings->get(My::id())->get('settings');
+        $s = My::settings()->get('settings');
         if (!is_string($s)) {
             return;
         }
@@ -122,7 +120,7 @@ final class Targets
             $targets[$target->id] = $target->exportSettings();
         }
 
-        dcCore::app()->blog?->settings->get(My::id())->put('settings', json_encode($targets), 'string');
+        My::settings()->put('settings', json_encode($targets), 'string');
     }
 
     /**
