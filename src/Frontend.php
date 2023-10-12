@@ -1,23 +1,19 @@
 <?php
-/**
- * @brief noodles, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\noodles;
 
-use dcCore;
-use dcUtils;
+use Dotclear\App;
 use Dotclear\Core\Process;
 
+/**
+ * @brief   noodles frontend class.
+ * @ingroup noodles
+ *
+ * @author      Jean-Christian Denis
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 class Frontend extends Process
 {
     public static function init(): bool
@@ -37,7 +33,7 @@ class Frontend extends Process
             return false;
         }
 
-        dcCore::app()->tpl->setPath(dcCore::app()->tpl->getPath(), My::path() . '/default-templates');
+        App::frontend()->tpl->setPath(App::frontend()->tpl->getPath(), My::path() . '/default-templates');
 
         foreach ($targets->dump() as $target) {
             if ($target->active() && $target->hasPhpCallback()) {
@@ -45,15 +41,15 @@ class Frontend extends Process
             }
         }
 
-        dcCore::app()->addBehavior('publicHeadContent', function (): void {
-            if (is_null(dcCore::app()->blog)) {
+        App::behavior()->addBehavior('publicHeadContent', function (): void {
+            if (!App::blog()->isDefined()) {
                 return;
             }
 
             echo
-                dcUtils::cssLoad(dcCore::app()->blog->url . dcCore::app()->url->getURLFor('noodles_css')) .
-                dcUtils::jsLoad(dcCore::app()->blog->url . dcCore::app()->url->getBase('noodles_file') . '/js/jquery.noodles.js') .
-                dcUtils::jsLoad(dcCore::app()->blog->url . dcCore::app()->url->getURLFor('noodles_js'));
+                App::plugins()->cssLoad(App::blog()->url() . App::url()->getURLFor('noodles_css')) .
+                App::plugins()->jsLoad(App::blog()->url() . App::url()->getBase('noodles_file') . '/js/jquery.noodles.js') .
+                App::plugins()->jsLoad(App::blog()->url() . App::url()->getURLFor('noodles_js'));
         });
 
         return true;

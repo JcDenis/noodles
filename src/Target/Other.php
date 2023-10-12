@@ -1,20 +1,10 @@
 <?php
-/**
- * @brief noodles, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\noodles\Target;
 
-use dcCore;
+use Dotclear\App;
 use Dotclear\Database\MetaRecord;
 use Dotclear\Plugin\noodles\{
     Image,
@@ -24,7 +14,11 @@ use Dotclear\Plugin\noodles\{
 };
 
 /**
- * Target complete rendering.
+ * @brief   noodles target complete rendreing.
+ * @ingroup noodles
+ *
+ * @author      Jean-Christian Denis
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
 class Other
 {
@@ -36,7 +30,7 @@ class Other
         $bhv = $target->place() == 'prepend' || $target->place() == 'before' ?
             'publicEntryBeforeContent' : 'publicEntryAfterContent';
 
-        dcCore::app()->addBehavior($bhv, [self::class, 'publicEntryContent']);
+        App::behavior()->addBehavior($bhv, self::publicEntryContent(...));
     }
 
     public static function publicEntryContent(): void
@@ -45,14 +39,14 @@ class Other
         $target  = $targets->get('posts');
 
         if (is_null($target)
-            || is_null(dcCore::app()->ctx)
-            || is_null(dcCore::app()->blog)
-            || dcCore::app()->ctx->__get('current_tpl') != 'post.html'
+            || !isset(App::frontend()->ctx)
+            || !App::blog()->isDefined()
+            || App::frontend()->ctx->__get('current_tpl') != 'post.html'
         ) {
             return;
         }
 
-        $m = dcCore::app()->ctx->__get('posts');
+        $m = App::frontend()->ctx->__get('posts');
         if (!($m instanceof MetaRecord)) {
             return;
         }
@@ -76,7 +70,7 @@ class Other
         $bhv = $target->place() == 'prepend' || $target->place() == 'before' ?
             'publicCommentBeforeContent' : 'publicCommentAfterContent';
 
-        dcCore::app()->addBehavior($bhv, [self::class, 'publicCommentContent']);
+        App::behavior()->addBehavior($bhv, self::publicCommentContent(...));
     }
 
     public static function publicCommentContent(): void
@@ -85,14 +79,14 @@ class Other
         $target  = $targets->get('comments');
 
         if (is_null($target)
-            || is_null(dcCore::app()->ctx)
-            || is_null(dcCore::app()->blog)
-            || dcCore::app()->ctx->__get('current_tpl') != 'post.html'
+            || !isset(App::frontend()->ctx)
+            || !App::blog()->isDefined()
+            || App::frontend()->ctx->__get('current_tpl') != 'post.html'
         ) {
             return;
         }
 
-        $m = dcCore::app()->ctx->__get('comments');
+        $m = App::frontend()->ctx->__get('comments');
         if (!($m instanceof MetaRecord)) {
             return;
         }

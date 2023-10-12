@@ -1,20 +1,10 @@
 <?php
-/**
- * @brief noodles, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\noodles;
 
-use dcCore;
+use Dotclear\App;
 use Dotclear\Core\Backend\{
     Notices,
     Page
@@ -33,6 +23,13 @@ use Dotclear\Helper\Html\Form\{
 };
 use Exception;
 
+/**
+ * @brief   noodles manage class.
+ * @ingroup noodles
+ *
+ * @author      Jean-Christian Denis
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 class Manage extends Process
 {
     public static function init(): bool
@@ -47,7 +44,7 @@ class Manage extends Process
         }
 
         // nullsafe check
-        if (is_null(dcCore::app()->blog)) {
+        if (!App::blog()->isDefined()) {
             return false;
         }
 
@@ -81,11 +78,11 @@ class Manage extends Process
             }
             $targets->export();
 
-            dcCore::app()->blog->triggerBlog();
+            App::blog()->triggerBlog();
             Notices::addSuccessNotice(__('Configuration successfully updated'));
             My::redirect();
         } catch (Exception $e) {
-            dcCore::app()->error->add($e->getMessage());
+            App::error()->add($e->getMessage());
         }
 
         return true;
@@ -98,7 +95,7 @@ class Manage extends Process
         }
 
         // nullsafe check
-        if (is_null(dcCore::app()->blog)) {
+        if (!App::blog()->isDefined()) {
             return;
         }
 

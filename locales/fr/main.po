@@ -58,7 +58,7 @@ msgstr "Avatar par défaut :"
 
 #: src/Manage.php:130
 msgid "You can add your own default avatar by adding file \"%s\" in media manager."
-msgstr "Vous pouvez ajouter votr epropre avatar par défaut en ajoutant un fichier \"%s\" au gestionnaire de média."
+msgstr "Vous pouvez ajouter votre propre avatar par défaut en ajoutant un fichier \"%s\" au gestionnaire de média."
 
 #: src/Manage.php:136
 msgid "Search area"

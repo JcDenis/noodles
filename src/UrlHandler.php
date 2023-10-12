@@ -1,28 +1,25 @@
 <?php
-/**
- * @brief noodles, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\noodles;
 
-use dcCore;
-use dcUrlHandlers;
+use Dotclear\App;
+use Dotclear\Core\Frontend\Url;
 use Dotclear\Helper\File\Files;
 use Dotclear\Helper\File\Path;
 use Dotclear\Helper\Html\Html;
 use Dotclear\Helper\Html\XmlTag;
 use Exception;
 
-class UrlHandler extends dcUrlHandlers
+/**
+ * @brief   noodles URL handler.
+ * @ingroup noodles
+ *
+ * @author      Jean-Christian Denis
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
+class UrlHandler extends Url
 {
     public static function css(?string $args): void
     {
@@ -43,7 +40,7 @@ class UrlHandler extends dcUrlHandlers
 
     public static function js(?string $args): void
     {
-        if (is_null(dcCore::app()->blog)) {
+        if (!App::blog()->isDefined()) {
             self::p404();
         }
 
@@ -62,7 +59,7 @@ class UrlHandler extends dcUrlHandlers
 
         echo
         "\$(function(){if(!document.getElementById){return;} \n" .
-        "\$.fn.noodles.defaults.service_url = '" . Html::escapeJS(dcCore::app()->blog->url . dcCore::app()->url->getBase('noodles_service') . '/') . "'; \n" .
+        "\$.fn.noodles.defaults.service_url = '" . Html::escapeJS(App::blog()->url() . App::url()->getBase('noodles_service') . '/') . "'; \n" .
         "\$.fn.noodles.defaults.service_func = '" . Html::escapeJS('getNoodle') . "'; \n" .
         implode("\n", $targets) .
         "})\n";
@@ -72,7 +69,7 @@ class UrlHandler extends dcUrlHandlers
 
     public static function service(string $args): void
     {
-        if (is_null(dcCore::app()->blog)) {
+        if (!App::blog()->isDefined()) {
             self::p404();
         }
 
@@ -147,7 +144,7 @@ class UrlHandler extends dcUrlHandlers
 
     public static function file(string $args): void
     {
-        if (is_null(dcCore::app()->blog)
+        if (!App::blog()->isDefined()
             || !Targets::instance()->active
             || str_contains('..', $args)
             || !preg_match('#^([^\?]*)#', $args, $m)
@@ -169,12 +166,12 @@ class UrlHandler extends dcUrlHandlers
         header('Content-Type: ' . $type . '; charset=UTF-8');
         header('Content-Length: ' . filesize($f));
 
-        if ($type != 'text/css' || dcCore::app()->blog->settings->get('system')->get('url_scan') == 'path_info') {
+        if ($type != 'text/css' || App::blog()->settings()->get('system')->get('url_scan') == 'path_info') {
             readfile($f);
         } else {
             echo preg_replace(
                 '#url\((?!(http:)|/)#',
-                'url(' . dcCore::app()->blog->url . dcCore::app()->url->getBase('noodles_file') . '/',
+                'url(' . App::blog()->url() . App::url()->getBase('noodles_file') . '/',
                 (string) file_get_contents($f)
             );
         }
@@ -187,7 +184,7 @@ class UrlHandler extends dcUrlHandlers
         if (str_contains($file, '..')) {
             return '';
         }
-        $paths = dcCore::app()->tpl->getPath();
+        $paths = App::frontend()->tpl->getPath();
 
         foreach ($paths as $path) {
             if (preg_match('/tpl(\/|)$/', $path)) {

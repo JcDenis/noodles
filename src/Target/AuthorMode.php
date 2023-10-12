@@ -1,20 +1,10 @@
 <?php
-/**
- * @brief noodles, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\noodles\Target;
 
-use dcCore;
+use Dotclear\App;
 use Dotclear\Database\MetaRecord;
 use Dotclear\Plugin\noodles\{
     Image,
@@ -24,7 +14,11 @@ use Dotclear\Plugin\noodles\{
 };
 
 /**
- * Target rendering adapt to plugin authorMode.
+ * @brief   noodles target rendreing for plugin authorMode.
+ * @ingroup noodles
+ *
+ * @author      Jean-Christian Denis
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
 class AuthorMode
 {
@@ -34,7 +28,7 @@ class AuthorMode
         if (!$ok || !$m[1]) {
             return '';
         }
-        $rs = dcCore::app()->getUser($m[1]);
+        $rs = App::users()->getUser($m[1]);
         if ($rs->isEmpty()) {
             return '';
         }
@@ -47,7 +41,7 @@ class AuthorMode
     public static function author(Target $target): void
     {
         if ($target->active()) {
-            dcCore::app()->addBehavior('publicHeadContent', [self::class, 'publicHeadContent']);
+            App::behavior()->addBehavior('publicHeadContent', self::publicHeadContent(...));
         }
     }
 
@@ -57,14 +51,14 @@ class AuthorMode
         $target  = $targets->get('author');
 
         if (is_null($target)
-            || is_null(dcCore::app()->ctx)
-            || is_null(dcCore::app()->blog)
-            || dcCore::app()->ctx->__get('current_tpl') != 'author.html'
+            || !isset(App::frontend()->ctx)
+            || !App::blog()->isDefined()
+            || App::frontend()->ctx->__get('current_tpl') != 'author.html'
         ) {
             return;
         }
 
-        $u = dcCore::app()->ctx->__get('users');
+        $u = App::frontend()->ctx->__get('users');
         if (!($u instanceof MetaRecord)) {
             return;
         }
@@ -72,7 +66,7 @@ class AuthorMode
         if (!is_string($u)) {
             return;
         }
-        $u = dcCore::app()->getUser($u)->f('user_email');
+        $u = App::users()->getUser($u)->f('user_email');
         if (!is_string($u)) {
             $u = '';
         }

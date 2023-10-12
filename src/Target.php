@@ -1,40 +1,57 @@
 <?php
-/**
- * @brief noodles, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\noodles;
 
 /**
- * Target definition.
+ * @brief   noodles target definition.
+ * @ingroup noodles
+ *
+ * @author      Jean-Christian Denis
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
 class Target
 {
-    /** @var   bool    The noodle activation */
+    /**
+     * The noodle activation.
+     *
+     * @var     bool    $active
+     */
     private bool $active = false;
 
-    /** @var    string  The noodle rating */
+    /**
+     * The noodle rating.
+     *
+     * @var     string  $rating
+     */
     private string $rating = 'g';
 
-    /** @var    int     The noodle size */
+    /**
+     * The noodle size.
+     *
+     * @var     int     $size
+     */
     private int $size = 16;
 
-    /** @var    string The noodle css */
+    /**
+     * The noodle css.
+     *
+     *  @var    string  $css */
     private string $css = '';
 
-    /** @var    string  The noodle target */
+    /**
+     * The noodle target.
+     *
+     * @var     string  $target
+     */
     private string $target = '';
 
-    /** @var    string  The noodle place */
+    /**
+     * The noodle place.
+     *
+     * @var     string  $place
+     */
     private string $place = 'prepend';
 
     /**

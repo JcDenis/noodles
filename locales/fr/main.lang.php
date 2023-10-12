@@ -21,7 +21,7 @@ L10n::$locales['See local default avatar.']                                     
 L10n::$locales['Enable plugin noodles on this blog']                                        = 'Activer le plugin Noodles sur ce blog';
 L10n::$locales['Image API:']                                                                = 'API des avatars :';
 L10n::$locales['Default image:']                                                            = 'Avatar par défaut :';
-L10n::$locales['You can add your own default avatar by adding file "%s" in media manager.'] = 'Vous pouvez ajouter votr epropre avatar par défaut en ajoutant un fichier "%s" au gestionnaire de média.';
+L10n::$locales['You can add your own default avatar by adding file "%s" in media manager.'] = 'Vous pouvez ajouter votre propre avatar par défaut en ajoutant un fichier "%s" au gestionnaire de média.';
 L10n::$locales['Search area']                                                               = 'Zone de recherche';
 L10n::$locales['Rating']                                                                    = 'Évaluation';
 L10n::$locales['Target']                                                                    = 'Cible';

@@ -1,40 +1,54 @@
 <?php
-/**
- * @brief noodles, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\noodles;
 
-use dcCore;
+use Dotclear\App;
 use Exception;
 
 /**
- * Targets stack.
+ * @brief   noodles targets stack.
+ * @ingroup noodles
+ *
+ * @author      Jean-Christian Denis
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
 final class Targets
 {
-    /** @var    Targets     The noodles instance */
+    /**
+     * The noodles instance.
+     *
+     * @var     Targets     $instance
+     */
     private static $instance;
 
-    /** @ var   bool    The activation */
+    /**
+     * The activation.
+     *
+     * @var     bool    $active
+     */
     public readonly bool $active;
 
-    /** @ var   string  The API URL */
+    /**
+     * The API URL.
+     *
+     * @var     string  $api
+     */
     public readonly string $api;
 
-    /** @ var   bool    Use local image */
+    /**
+     * Use local image.
+     *
+     * @var     bool    $local
+     */
     public readonly bool $local;
 
-    /** @var    array<string,Target> The noodles stack */
+    /**
+     * The noodles stack.
+     *
+     * @var     array<string,Target>    $targets
+     */
     private array $targets = [];
 
     /**
@@ -55,7 +69,7 @@ final class Targets
         $this->local  = is_bool($local) ? $local : false;
 
         // add noodles
-        dcCore::app()->callBehavior('TargetsConstruct', $this);
+        App::behavior()->callBehavior('TargetsConstruct', $this);
 
         // add default noodles
         $this->registerDefault();
@@ -176,7 +190,7 @@ final class Targets
      */
     private function registerDefault(): void
     {
-        if (is_null(dcCore::app()->blog)) {
+        if (!App::blog()->isDefined()) {
             return;
         }
 
@@ -185,7 +199,7 @@ final class Targets
             (new Target(
                 id:           'posts',
                 name:         __('Entries'),
-                php_callback: [Target\Other::class, 'publicPosts']
+                php_callback: Target\Other::publicPosts(...)
             ))
             ->setSize(48)
             ->setCss('float:right;margin:4px;')
@@ -196,7 +210,7 @@ final class Targets
             (new Target(
                 id:           'comments',
                 name:         __('Comments'),
-                php_callback: [Target\Other::class, 'publicComments']
+                php_callback: Target\Other::publicComments(...)
             ))
             ->setActive(true)
             ->setSize(48)
@@ -208,19 +222,19 @@ final class Targets
             (new Target(
                 id:          'titlesposts',
                 name:        __('Entries titles'),
-                js_callback: [Target\Generic::class, 'postURL']
+                js_callback: Target\Generic::postURL(...)
             ))
             ->setTarget('.post-title a')
             ->setCss('margin-right:2px;')
         );
 
-        if (dcCore::app()->plugins->moduleExists('widgets')) {
+        if (App::plugins()->moduleExists('widgets')) {
             # Widget Selected entries
             $this->set(
                 (new Target(
                     id:          'bestof',
                     name:        __('Selected entries'),
-                    js_callback: [Target\Generic::class, 'postURL']
+                    js_callback: Target\Generic::postURL(...)
                 ))
                 ->setTarget('.selected li a')
                 ->setCss('margin-right:2px;')
@@ -231,7 +245,7 @@ final class Targets
                 (new Target(
                     id:          'lastposts',
                     name:        __('Last entries'),
-                    js_callback: [Target\Generic::class, 'postURL']
+                    js_callback: Target\Generic::postURL(...)
                 ))
                 ->setTarget('.lastposts li a')
                 ->setCss('margin-right:2px;')
@@ -242,7 +256,7 @@ final class Targets
                 (new Target(
                     id:          'lastcomments',
                     name:        __('Last comments'),
-                    js_callback: [Target\Widgets::class, 'lastcomments']
+                    js_callback: Target\Widgets::lastcomments(...)
                 ))
                 ->setActive(true)
                 ->setTarget('.lastcomments li a')
@@ -251,14 +265,14 @@ final class Targets
         }
 
         # Plugin auhtorMode
-        if (dcCore::app()->plugins->moduleExists('authorMode')
-            && dcCore::app()->blog->settings->get('authormode')->get('authormode_active')
+        if (App::plugins()->moduleExists('authorMode')
+            && App::blog()->settings()->get('authormode')->get('authormode_active')
         ) {
             $this->set(
                 (new Target(
                     id:          'authorswidget',
                     name:        __('Authors widget'),
-                    js_callback: [Target\AuthorMode::class, 'authors']
+                    js_callback: Target\AuthorMode::authors(...)
                 ))
                 ->setTarget('#authors ul li a')
                 ->setCss('margin-right:2px;')
@@ -268,7 +282,7 @@ final class Targets
                 (new Target(
                     id:           'author',
                     name:         __('Author'),
-                    php_callback: [Target\AuthorMode::class, 'author']
+                    php_callback: Target\AuthorMode::author(...)
                 ))
                 ->setActive(true)
                 ->setSize(48)
@@ -280,7 +294,7 @@ final class Targets
                 (new Target(
                     id:          'authors',
                     name:        __('Authors'),
-                    js_callback: [Target\AuthorMode::class, 'authors']
+                    js_callback: Target\AuthorMode::authors(...)
                 ))
                 ->setActive(true)
                 ->setSize(32)
@@ -290,14 +304,14 @@ final class Targets
         }
 
         # Plugin rateIt
-        if (dcCore::app()->plugins->moduleExists('rateIt')
-            && dcCore::app()->blog->settings->get('rateit')->get('rateit_active')
+        if (App::plugins()->moduleExists('rateIt')
+            && App::blog()->settings()->get('rateit')->get('rateit_active')
         ) {
             $this->set(
                 (new Target(
                     id:          'rateitpostsrank',
                     name:         __('Top rated entries'),
-                    js_callback: [Target\Generic::class, 'postURL']
+                    js_callback: Target\Generic::postURL(...)
                 ))
                 ->setTarget('.rateitpostsrank.rateittypepost ul li a') // Only "post" type
                 ->setCss('margin-right:2px;')
@@ -305,12 +319,12 @@ final class Targets
         }
 
         # Plugin lastpostsExtend
-        if (dcCore::app()->plugins->moduleExists('lastpostsExtend')) {
+        if (App::plugins()->moduleExists('lastpostsExtend')) {
             $this->set(
                 (new Target(
                     id:          'lastpostsextend',
                     name:        __('Last entries (extend)'),
-                    js_callback: [Target\Generic::class, 'postURL']
+                    js_callback: Target\Generic::postURL(...)
                 ))
                 ->setTarget('.lastpostsextend ul li a')
                 ->setCss('margin-right:2px;')

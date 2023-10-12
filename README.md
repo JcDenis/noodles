@@ -1,26 +1,22 @@
 # README
 
-[![Release](https://img.shields.io/badge/release-1.1-a2cbe9.svg)](https://git.dotclear.watch/JcDenis/oodles/releases)
-[![Date](https://img.shields.io/badge/date-2023.08.15-c44d58.svg)](https://git.dotclear.watch/JcDenis/oodles/releases)
-[![Dotclear](https://img.shields.io/badge/dotclear-v2.27-137bbb.svg)](https://fr.dotclear.org/download)
+[![Release](https://img.shields.io/badge/release-1.2-a2cbe9.svg)](https://git.dotclear.watch/JcDenis/noodles/releases)
+![Date](https://img.shields.io/badge/date-2023.10.12-c44d58.svg)
+[![Dotclear](https://img.shields.io/badge/dotclear-v2.28-137bbb.svg)](https://fr.dotclear.org/download)
 [![Dotaddict](https://img.shields.io/badge/dotaddict-official-9ac123.svg)](https://plugins.dotaddict.org/dc2/details/oodles)
-[![License](https://img.shields.io/github/license/JcDenis/oodles)](https://git.dotclear.watch/JcDenis/oodles/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/JcDenis/noodles)](https://git.dotclear.watch/JcDenis/noodles/blob/master/LICENSE)
 
-## WHAT IS NOODLES ?
+## ABOUT
 
-_noodles_ is a plugin for the open-source 
-web publishing software called Dotclear.
+_whiteListCom_ is a plugin for the open-source web publishing software called [Dotclear](https://www.dotclear.org).
 
-It adds gravatars everywhere it is possible on 
-your blog. comments, posts, widgets...
+> Add gravatars everywhere it is possible on your blog. comments, posts, widgets...
 
 ## REQUIREMENTS
 
-_noodles_ requires: 
-
-* Permissions admin
-* Dotclear 2.26
+* Dotclear 2.28
 * PHP 8.1+
+* Permissions admin
 
 ## USAGE
 
@@ -32,9 +28,11 @@ go to ''configure plugin'', fill in form.
 
 ## LINKS
 
-* License : [GNU GPL v2](https://www.gnu.org/licenses/old-licenses/lgpl-2.0.html)
-* Source & contribution : [Gitea Page](https://git.dotclear.watch/JcDenis/oodles) or [GitHub Page](https://github.com/JcDenis/oodles)
-* Packages & details: [Gitea Page](https://git.dotclear.watch/JcDenis/oodles/releases) or [Dotaddict Page](https://plugins.dotaddict.org/dc2/details/oodles)
+* [License](https://git.dotclear.watch/JcDenis/noodles/src/branch/master/LICENSE)
+* [Packages & details](https://git.dotclear.watch/JcDenis/noodles/releases) (or on [Dotaddict](https://plugins.dotaddict.org/dc2/details/noodles))
+* [Sources & contributions](https://git.dotclear.watch/JcDenis/noodles) (or on [GitHub](https://github.com/JcDenis/noodles))
+* [Issues & security](https://git.dotclear.watch/JcDenis/noodles/issues) (or on [GitHub](https://github.com/JcDenis/noodles/issues))
+
 
 ## CONTRIBUTORS
 

@@ -1,23 +1,20 @@
 <?php
-/**
- * @brief noodles, a plugin for Dotclear 2
- *
- * @package Dotclear
- * @subpackage Plugin
- *
- * @author Jean-Christian Denis and contributors
- *
- * @copyright Jean-Christian Denis
- * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
- */
+
 declare(strict_types=1);
 
 namespace Dotclear\Plugin\noodles;
 
-use dcCore;
+use Dotclear\App;
 use Dotclear\Core\Process;
 use Exception;
 
+/**
+ * @brief   noodles install class.
+ * @ingroup noodles
+ *
+ * @author      Jean-Christian Denis
+ * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
+ */
 class Install extends Process
 {
     public static function init(): bool
@@ -33,10 +30,6 @@ class Install extends Process
 
         try {
             $s = My::settings();
-            if (is_null($s)) {
-                return false;
-            }
-            # Set module settings
             $s->put('active', false, 'boolean', 'enable module', false, true);
             $s->put('api', 'http://www.gravatar.com/', 'string', 'external API', false, true);
             $s->put('local', false, 'boolean', 'use local image', false, true);
@@ -44,7 +37,7 @@ class Install extends Process
 
             return true;
         } catch (Exception $e) {
-            dcCore::app()->error->add($e->getMessage());
+            App::error()->add($e->getMessage());
 
             return false;
         }
