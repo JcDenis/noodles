@@ -8,7 +8,7 @@
 
 ## ABOUT
 
-_whiteListCom_ is a plugin for the open-source web publishing software called [Dotclear](https://www.dotclear.org).
+_noodles_ is a plugin for the open-source web publishing software called [Dotclear](https://www.dotclear.org).
 
 > Add gravatars everywhere it is possible on your blog. comments, posts, widgets...
 
