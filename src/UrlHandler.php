@@ -184,7 +184,7 @@ class UrlHandler extends Url
         if (str_contains($file, '..')) {
             return '';
         }
-        $paths = App::frontend()->tpl->getPath();
+        $paths = App::frontend()->template()->getPath();
 
         foreach ($paths as $path) {
             if (preg_match('/tpl(\/|)$/', $path)) {
