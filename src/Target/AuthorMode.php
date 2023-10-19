@@ -51,14 +51,13 @@ class AuthorMode
         $target  = $targets->get('author');
 
         if (is_null($target)
-            || !isset(App::frontend()->ctx)
             || !App::blog()->isDefined()
-            || App::frontend()->ctx->__get('current_tpl') != 'author.html'
+            || App::frontend()->context()->__get('current_tpl') != 'author.html'
         ) {
             return;
         }
 
-        $u = App::frontend()->ctx->__get('users');
+        $u = App::frontend()->context()->__get('users');
         if (!($u instanceof MetaRecord)) {
             return;
         }

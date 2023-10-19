@@ -17,7 +17,7 @@ $this->registerModule(
     'Noodles',
     'Add users gravatars everywhere',
     'Jean-Christian Denis and contributors',
-    '1.2.1',
+    '1.2.2',
     [
         'requires'    => [['core', '2.28']],
         'permissions' => 'My',

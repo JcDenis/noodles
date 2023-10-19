@@ -39,14 +39,13 @@ class Other
         $target  = $targets->get('posts');
 
         if (is_null($target)
-            || !isset(App::frontend()->ctx)
             || !App::blog()->isDefined()
-            || App::frontend()->ctx->__get('current_tpl') != 'post.html'
+            || App::frontend()->context()->__get('current_tpl') != 'post.html'
         ) {
             return;
         }
 
-        $m = App::frontend()->ctx->__get('posts');
+        $m = App::frontend()->context()->__get('posts');
         if (!($m instanceof MetaRecord)) {
             return;
         }
@@ -79,14 +78,13 @@ class Other
         $target  = $targets->get('comments');
 
         if (is_null($target)
-            || !isset(App::frontend()->ctx)
             || !App::blog()->isDefined()
-            || App::frontend()->ctx->__get('current_tpl') != 'post.html'
+            || App::frontend()->context()->__get('current_tpl') != 'post.html'
         ) {
             return;
         }
 
-        $m = App::frontend()->ctx->__get('comments');
+        $m = App::frontend()->context()->__get('comments');
         if (!($m instanceof MetaRecord)) {
             return;
         }
