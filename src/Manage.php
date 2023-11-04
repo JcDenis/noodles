@@ -179,9 +179,9 @@ class Manage extends Process
                 '<img alt="nok" src="images/check-off.png" />'
             ) . '</td>
             <td><img alt="ok" src="images/check-on.png" /></td>
-            <td>' . (new Input(['noodle[' . $target->id . '][target]']))->size(20)->maxlenght(255)->value($target->target())->render() . '</td>
+            <td>' . (new Input(['noodle[' . $target->id . '][target]']))->size(20)->maxlength(255)->value($target->target())->render() . '</td>
             <td>' . (new Select(['noodle[' . $target->id . '][place]']))->items(Combo::place())->default($target->place())->render() . '</td>
-            <td>' . (new Input(['noodle[' . $target->id . '][css]']))->size(20)->maxlenght(255)->value($target->css())->render() . '</td>
+            <td>' . (new Input(['noodle[' . $target->id . '][css]']))->size(20)->maxlength(255)->value($target->css())->render() . '</td>
             <td> .noodles-' . $target->id . '{}</td>
             </tr>';
         }
