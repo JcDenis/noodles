@@ -33,7 +33,7 @@ class Frontend extends Process
             return false;
         }
 
-        App::frontend()->template()->setPath(App::frontend()->template()->getPath(), My::path() . '/default-templates');
+        App::frontend()->template()->appendPath(My::path() . '/default-templates');
 
         foreach ($targets->dump() as $target) {
             if ($target->active() && $target->hasPhpCallback()) {
