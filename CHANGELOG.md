@@ -1,3 +1,10 @@
+noodles 1.2.3 - 2023.11.04
+===========================================================
+* Require Dotclear 2.28
+* Require PHP 8.1
+* Upgrade to last minute change to Dotclear 2.28
+* Fix typo
+
 noodles 1.2.2 - 2023.10.19
 ===========================================================
 * Require Dotclear 2.28
