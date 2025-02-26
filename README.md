@@ -1,10 +1,10 @@
 # README
 
-[![Release](https://img.shields.io/badge/release-1.2.3-a2cbe9.svg)](https://git.dotclear.watch/JcDenis/noodles/releases)
+[![Release](https://img.shields.io/badge/release-1.2.3-a2cbe9.svg)](https://github.com/JcDenis/noodles/releases)
 ![Date](https://img.shields.io/badge/date-2023.11.04-c44d58.svg)
 [![Dotclear](https://img.shields.io/badge/dotclear-v2.28-137bbb.svg)](https://fr.dotclear.org/download)
 [![Dotaddict](https://img.shields.io/badge/dotaddict-official-9ac123.svg)](https://plugins.dotaddict.org/dc2/details/noodles)
-[![License](https://img.shields.io/badge/license-GPL--2.0-ececec.svg)](https://git.dotclear.watch/JcDenis/noodles/src/branch/master/LICENSE)
+[![License](https://img.shields.io/badge/license-GPL--2.0-ececec.svg)](https://github.com/JcDenis/noodles/src/branch/master/LICENSE)
 
 ## ABOUT
 
@@ -28,10 +28,10 @@ go to ''configure plugin'', fill in form.
 
 ## LINKS
 
-* [License](https://git.dotclear.watch/JcDenis/noodles/src/branch/master/LICENSE)
-* [Packages & details](https://git.dotclear.watch/JcDenis/noodles/releases) (or on [Dotaddict](https://plugins.dotaddict.org/dc2/details/noodles))
-* [Sources & contributions](https://git.dotclear.watch/JcDenis/noodles) (or on [GitHub](https://github.com/JcDenis/noodles))
-* [Issues & security](https://git.dotclear.watch/JcDenis/noodles/issues) (or on [GitHub](https://github.com/JcDenis/noodles/issues))
+* [License](https://github.com/JcDenis/noodles/src/branch/master/LICENSE)
+* [Packages & details](https://github.com/JcDenis/noodles/releases) (or on [Dotaddict](https://plugins.dotaddict.org/dc2/details/noodles))
+* [Sources & contributions](https://github.com/JcDenis/noodles)
+* [Issues & security](https://github.com/JcDenis/noodles/issues)
 * [Discuss & help](https://forum.dotclear.org/viewtopic.php?id=39993)
 
 ## CONTRIBUTORS
