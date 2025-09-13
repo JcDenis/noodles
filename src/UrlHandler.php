@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\noodles;
 
 use Dotclear\App;
-use Dotclear\Core\Frontend\Url;
 use Dotclear\Helper\File\Files;
 use Dotclear\Helper\File\Path;
 use Dotclear\Helper\Html\Html;
@@ -19,7 +18,7 @@ use Exception;
  * @author      Jean-Christian Denis
  * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-class UrlHandler extends Url
+class UrlHandler
 {
     public static function css(?string $args): void
     {
@@ -41,7 +40,7 @@ class UrlHandler extends Url
     public static function js(?string $args): void
     {
         if (!App::blog()->isDefined()) {
-            self::p404();
+            App::url()::p404();
         }
 
         $targets = [];
@@ -70,7 +69,7 @@ class UrlHandler extends Url
     public static function service(string $args): void
     {
         if (!App::blog()->isDefined()) {
-            self::p404();
+            App::url()::p404();
         }
 
         header('Content-Type: text/xml; charset=UTF-8');
@@ -149,17 +148,17 @@ class UrlHandler extends Url
             || str_contains('..', $args)
             || !preg_match('#^([^\?]*)#', $args, $m)
         ) {
-            self::p404();
+            App::url()::p404();
         }
 
         $f = self::searchTplFiles($m[1]);
         if (empty($f)) {
-            self::p404();
+            App::url()::p404();
         }
 
         $allowed_types = ['png', 'jpg', 'jpeg', 'gif', 'css', 'js', 'swf'];
         if (!in_array(Files::getExtension($f), $allowed_types)) {
-            self::p404();
+            App::url()::p404();
         }
         $type = Files::getMimeType($f);
 

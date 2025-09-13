@@ -97,7 +97,7 @@ class Target
         $this->setRating($settings['rating'] ?? $this->rating());
         $this->setSize($settings['size'] ?? $this->size());
         $this->setCss($settings['css'] ?? $this->css());
-        $this->settarget($settings['target'] ?? $this->target());
+        $this->setTarget($settings['target'] ?? $this->target());
         $this->setPlace($settings['place'] ?? $this->place());
 
         return true;

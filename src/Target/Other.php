@@ -6,12 +6,10 @@ namespace Dotclear\Plugin\noodles\Target;
 
 use Dotclear\App;
 use Dotclear\Database\MetaRecord;
-use Dotclear\Plugin\noodles\{
-    Image,
-    My,
-    Targets,
-    Target
-};
+use Dotclear\Plugin\noodles\Image;
+use Dotclear\Plugin\noodles\My;
+use Dotclear\Plugin\noodles\Targets;
+use Dotclear\Plugin\noodles\Target;
 
 /**
  * @brief   noodles target complete rendreing.

@@ -5,22 +5,19 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\noodles;
 
 use Dotclear\App;
-use Dotclear\Core\Backend\{
-    Notices,
-    Page
-};
-use Dotclear\Core\Process;
-use Dotclear\Helper\Html\Form\{
-    Checkbox,
-    Div,
-    Input,
-    Label,
-    Note,
-    Para,
-    Select,
-    Submit,
-    Text
-};
+use Dotclear\Core\Backend\Notices;
+use Dotclear\Core\Backend\Page;
+use Dotclear\Helper\Process\TraitProcess;
+use Dotclear\Helper\Html\Form\Checkbox;
+use Dotclear\Helper\Html\Form\Div;
+use Dotclear\Helper\Html\Form\Input;
+use Dotclear\Helper\Html\Form\Label;
+use Dotclear\Helper\Html\Form\Note;
+use Dotclear\Helper\Html\Form\Option;
+use Dotclear\Helper\Html\Form\Para;
+use Dotclear\Helper\Html\Form\Select;
+use Dotclear\Helper\Html\Form\Submit;
+use Dotclear\Helper\Html\Form\Text;
 use Exception;
 
 /**
@@ -30,8 +27,10 @@ use Exception;
  * @author      Jean-Christian Denis
  * @copyright   GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-class Manage extends Process
+class Manage
 {
+    use TraitProcess;
+
     public static function init(): bool
     {
         return self::status(My::checkContext(My::MANAGE));
@@ -104,7 +103,7 @@ class Manage extends Process
         if (is_null($path)) {
             $note = __('Local default avatar is not reachable!');
         } else {
-            $note = '<a href="' . Image::getURL() . '">' . __('See local default avatar.') . '</a>';
+            $note = '<a href="' . Image::getUrl() . '">' . __('See local default avatar.') . '</a>';
         }
 
         Page::openModule(My::name());
@@ -146,7 +145,7 @@ class Manage extends Process
                             ->for('noodles_local'),
                         (new Select('noodles_local'))
                             ->default((string) (int) $targets->local)
-                            ->items(Combo::local()),
+                            ->items(array_map(fn ($v): string => (string) $v, Combo::local())),
                     ]),
                 (new Note(''))->class('form-note')->text($note),
                 (new Note(''))->class('form-note')->text(sprintf(__('You can add your own default avatar by adding file "%s" in media manager.'), 'img/' . My::IMAGE)),
@@ -171,7 +170,7 @@ class Manage extends Process
             <tr class="line">
             <td>' . (new Checkbox(['noodle[' . $target->id . '][active]', 'ck_' . $target->id], $target->active()))->value(1)->render() . '</td>
             <td class="nowrap" scope="row"><label for="ck_' . $target->id . '">' . $target->name . '</label></td>
-            <td>' . (new Select(['noodle[' . $target->id . '][size]']))->items(Combo::size())->default((string) $target->size())->render() . '</td>
+            <td>' . (new Select(['noodle[' . $target->id . '][size]']))->items(array_map(fn ($v): string => (string) $v, Combo::size()))->default((string) $target->size())->render() . '</td>
             <td>' . (new Select(['noodle[' . $target->id . '][rating]']))->items(Combo::rating())->default($target->rating())->render() . '</td>
             <td>' . (
                 $target->hasPhpCallback() ?

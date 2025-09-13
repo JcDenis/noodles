@@ -21,7 +21,7 @@ final class Targets
      *
      * @var     Targets     $instance
      */
-    private static $instance;
+    private static Targets $instance;
 
     /**
      * The activation.
@@ -95,7 +95,7 @@ final class Targets
      */
     public static function instance(): Targets
     {
-        if (!is_a(self::$instance, Targets::class)) {
+        if (!isset(self::$instance)) {
             self::$instance = new Targets();
         }
 
