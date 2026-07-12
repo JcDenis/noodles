@@ -41,10 +41,15 @@ class Image
             $public_url = '';
         }
 
+        $url   = App::blog()->settings()->get('system')->get('themes_url');
+        $url = is_string($url) ? $url : '';
+        $theme = App::blog()->settings()->get('system')->get('theme');
+        $theme = is_string($theme) ? $theme : '';
+
         return [
             'theme' => [
-                'dir' => Path::real(App::blog()->themesPath() . '/' . App::blog()->settings()->get('system')->get('theme') . '/img') . '/' . My::IMAGE,
-                'url' => App::blog()->settings()->get('system')->get('themes_url') . App::blog()->settings()->get('system')->get('theme') . '/img/' . My::IMAGE,
+                'dir' => Path::real(App::blog()->themesPath() . '/' . $theme. '/img') . '/' . My::IMAGE,
+                'url' => $url . $theme . '/img/' . My::IMAGE,
             ],
             'public' => [
                 'dir' => Path::real(App::blog()->publicPath()) . '/' . My::IMAGE,

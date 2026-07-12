@@ -31,9 +31,7 @@ class AuthorMode
             return '';
         }
 
-        $res = $rs->f('user_email');
-
-        return is_string($res) ? $res : '';
+        return $rs->strField('user_email');
     }
 
     public static function author(Target $target): void
@@ -59,14 +57,8 @@ class AuthorMode
         if (!($u instanceof MetaRecord)) {
             return;
         }
-        $u = $u->f('user_id');
-        if (!is_string($u)) {
-            return;
-        }
-        $u = App::users()->getUser($u)->f('user_email');
-        if (!is_string($u)) {
-            $u = '';
-        }
+        $u = $u->strField('user_id');
+        $u = App::users()->getUser($u)->strField('user_email');
         $d = $targets->local ? urlencode((string) Image::getUrl()) : '';
 
         echo

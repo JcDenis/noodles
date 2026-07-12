@@ -31,8 +31,6 @@ class Generic
             return '';
         }
 
-        $res = $rs->f('user_email');
-
-        return is_string($res) ? $res : '';
+        return $rs->strField('user_email');
     }
 }

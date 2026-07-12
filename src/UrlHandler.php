@@ -96,7 +96,7 @@ class UrlHandler
         }
 
         try {
-            $target = $targets->get($i);
+            $target = is_string($i) ? $targets->get($i) : null;
         } catch (Exception $e) {
             $rsp->insertAttr('status', 'failed');
             $rsp->insertNode(new XmlTag('message', __('Failed to load default noodles')));
@@ -113,7 +113,7 @@ class UrlHandler
             return;
         }
 
-        $m = $target->jsCallback($c);
+        $m = is_string($c) ? $target->jsCallback($c) : false;
         $s = $target->size();
         $r = $target->rating();
         $d = $targets->local ? urlencode((string) Image::getUrl()) : '';

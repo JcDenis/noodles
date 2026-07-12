@@ -73,17 +73,17 @@ class Target
     /**
      * Export settings in order to save it to blog settings.
      *
-     * @return  array<string,mixed>     The settings
+     * @return  array<string, mixed>    The settings
      */
     public function exportSettings(): array
     {
-        return get_object_vars($this);
+        return array_filter(get_object_vars($this), fn (mixed $k): bool => is_string($k), ARRAY_FILTER_USE_KEY);
     }
 
     /**
      * Import noodle settings from blog settings.
      *
-     * @param   array<string,mixed>     $settings   The settings
+     * @param   array<mixed>     $settings   The settings
      *
      * @return  bool    True on success
      */

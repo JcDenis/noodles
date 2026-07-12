@@ -58,11 +58,14 @@ class Manage
             $s->put('active', !empty($_POST['noodles_active']), 'boolean');
             $s->put('api', $_POST['noodles_api'], 'string');
             $s->put('local', !empty($_POST['noodles_local']), 'boolean');
+            if (!is_array($_POST['noodle'])) {
+                return true;
+            }
 
             // behaviors
             foreach ($_POST['noodle'] as $id => $bloc) {
-                $target = $targets->get($id);
-                if (is_null($target)) {
+                $target = $targets->get((string) $id);
+                if (is_null($target) || !is_array($bloc)) {
                     continue;
                 }
 
