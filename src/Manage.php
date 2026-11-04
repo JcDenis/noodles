@@ -177,10 +177,10 @@ class Manage
             <td>' . (new Select(['noodle[' . $target->id . '][rating]']))->items(Combo::rating())->default($target->rating())->render() . '</td>
             <td>' . (
                 $target->hasPhpCallback() ?
-                '<img alt="ok" src="images/check-on.png" />' :
-                '<img alt="nok" src="images/check-off.png" />'
+                '<img alt="ok" src="images/check-on.svg" class="mark mark-check-on" />' :
+                '<img alt="nok" src="images/check-off.svg" class="mark mark-check-off" />'
             ) . '</td>
-            <td><img alt="ok" src="images/check-on.png" /></td>
+            <td><img alt="ok" src="images/check-on.svg" class="mark mark-check-on" /></td>
             <td>' . (new Input(['noodle[' . $target->id . '][target]']))->size(20)->maxlength(255)->value($target->target())->render() . '</td>
             <td>' . (new Select(['noodle[' . $target->id . '][place]']))->items(Combo::place())->default($target->place())->render() . '</td>
             <td>' . (new Input(['noodle[' . $target->id . '][css]']))->size(20)->maxlength(255)->value($target->css())->render() . '</td>
