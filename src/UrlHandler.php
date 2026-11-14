@@ -66,7 +66,7 @@ class UrlHandler
         exit;
     }
 
-    public static function service(string $args): void
+    public static function service(?string $args): void
     {
         if (!App::blog()->isDefined()) {
             App::url()::p404();
@@ -129,10 +129,9 @@ class UrlHandler
             $r = 'g';
         }
 
-        $m  = (string) md5(strtolower(trim($m)));
         $im = new XmlTag('noodle');
         $im->insertAttr('size', $s);
-        $im->insertAttr('src', sprintf('%savatar/%s?s=%s&amp;r=%s&amp;d=%s', $u, $m, $s, $r, $d));
+        $im->insertAttr('src', $targets->avatarUrl($m, $s, $r));
 
         $rsp->insertNode($im);
         $rsp->insertAttr('status', 'ok');
@@ -141,12 +140,12 @@ class UrlHandler
         exit;
     }
 
-    public static function file(string $args): void
+    public static function file(?string $args): void
     {
         if (!App::blog()->isDefined()
             || !Targets::instance()->active
-            || str_contains('..', $args)
-            || !preg_match('#^([^\?]*)#', $args, $m)
+            || str_contains((string) $args, '..')
+            || !preg_match('#^([^\?]*)#', (string) $args, $m)
         ) {
             App::url()::p404();
         }
