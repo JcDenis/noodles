@@ -92,3 +92,32 @@ msgstr "Titres des billets"
 msgid "Authors widget"
 msgstr "Widgets des auteurs"
 
+msgid "Authors"
+msgstr "Auteurs"
+
+msgid "Top rated entries"
+msgstr "Entrées les mieux notées"
+
+msgid "Last entries (extend)"
+msgstr "Dernières entrées (étendu)"
+
+msgid "Configure \"%s\""
+msgstr "Configurer « %s »"
+
+msgid "Behaviors"
+msgstr "Comportements"
+
+msgid "Behaviors list"
+msgstr "Liste des comportements"
+
+msgid "noodles is disabled on this blog"
+msgstr "noodles est désactivé sur ce blog"
+
+msgid "noodles failed because of missing informations"
+msgstr "noodles a échoué faute d'informations"
+
+msgid "Failed to load default noodles"
+msgstr "Impossible de charger les noodles par défaut"
+
+msgid "Failed to load noodle"
+msgstr "Impossible de charger le noodle"
