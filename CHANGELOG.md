@@ -1,3 +1,14 @@
+noodles 1.6 - 2026.11.14
+===========================================================
+* Add Claude to contributors
+* [fix] PHP targets ignored the avatars API setting
+* [fix] Service failed with empty URL arguments, avatar URL double escaped
+* [fix] Default avatar not found in media img folder, malformed URLs
+* [fix] Admin page: JS column, untranslated strings
+* [lang] Add missing French translations
+* [docs] Add a user guide in French, with screenshots
+* [docs] Add the admin help in English and French
+
 noodles 1.5 - 2026.11.05
 ===========================================================
 * Fix missing admin images
