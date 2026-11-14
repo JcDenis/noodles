@@ -81,7 +81,7 @@ class Manage
             $targets->export();
 
             App::blog()->triggerBlog();
-            Notices::addSuccessNotice(__('Configuration successfully updated'));
+            Notices::addSuccessNotice(__('Configuration successfully updated.'));
             My::redirect();
         } catch (Exception $e) {
             App::error()->add($e->getMessage());
@@ -113,7 +113,7 @@ class Manage
 
         echo
         Page::breadcrumb([
-            __('Plugin') => '',
+            __('Plugins') => '',
             My::name()   => '',
         ]) .
         Notices::getNotices() . '
@@ -180,7 +180,11 @@ class Manage
                 '<img alt="ok" src="images/check-on.svg" class="mark mark-check-on" />' :
                 '<img alt="nok" src="images/check-off.svg" class="mark mark-check-off" />'
             ) . '</td>
-            <td><img alt="ok" src="images/check-on.svg" class="mark mark-check-on" /></td>
+            <td>' . (
+                $target->hasJsCallback() ?
+                '<img alt="ok" src="images/check-on.svg" class="mark mark-check-on" />' :
+                '<img alt="nok" src="images/check-off.svg" class="mark mark-check-off" />'
+            ) . '</td>
             <td>' . (new Input(['noodle[' . $target->id . '][target]']))->size(20)->maxlength(255)->value($target->target())->render() . '</td>
             <td>' . (new Select(['noodle[' . $target->id . '][place]']))->items(Combo::place())->default($target->place())->render() . '</td>
             <td>' . (new Input(['noodle[' . $target->id . '][css]']))->size(20)->maxlength(255)->value($target->css())->render() . '</td>
