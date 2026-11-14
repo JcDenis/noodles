@@ -12,6 +12,8 @@ _noodles_ is a plugin for the open-source web publishing software called [Dotcle
 
 > Add gravatars everywhere it is possible on your blog. comments, posts, widgets...
 
+A [user guide in French](https://github.com/JcDenis/noodles/blob/master/docs/fr/utilisation.md) is available.
+
 ## REQUIREMENTS
 
 * Dotclear 2.39
@@ -28,6 +30,7 @@ go to ''configure plugin'', fill in form.
 
 ## LINKS
 
+* [User guide (in French)](https://github.com/JcDenis/noodles/blob/master/docs/fr/utilisation.md)
 * [License](https://github.com/JcDenis/noodles/blob/master/LICENSE)
 * [Packages & details](https://github.com/JcDenis/noodles/releases) (or on [Repository](https://dotclear.org/plugin/detail/noodles))
 * [Sources & contributions](https://github.com/JcDenis/noodles)
