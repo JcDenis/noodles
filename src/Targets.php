@@ -331,4 +331,13 @@ final class Targets
             );
         }
     }
+
+    /**
+     * Get avatar URL (not HTML escaped) using avatars API setting.
+     */
+    public function avatarUrl(string $email, int|string $size, string $rating): string
+    {
+        return $this->api . 'avatar/' . md5(strtolower(trim($email))) .
+            '?s=' . $size . '&r=' . $rating . '&d=' . ($this->local ? urlencode((string) Image::getUrl()) : '');
+    }
 }

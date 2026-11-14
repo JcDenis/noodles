@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\noodles\Target;
 
 use Dotclear\App;
+use Dotclear\Helper\Html\Html;
 use Dotclear\Database\MetaRecord;
 use Dotclear\Plugin\noodles\Image;
 use Dotclear\Plugin\noodles\My;
@@ -67,8 +68,7 @@ class AuthorMode
         "$(function(){if(!document.getElementById){return;}\n" .
         "$('" . $target->target() . "')." . $target->place() . "('" .
         '<img class="noodles-comments" style="width:' . $target->size() . 'px;height:' . $target->size() . 'px;' . $target->css() . '"' .
-            'src="http://www.gravatar.com/avatar/' . md5($u) .
-            '?s=' . $target->size() . '&amp;r=' . $target->rating() . '&amp;d=' . $d . '" alt="" />' .
+            ' src="' . Html::escapeJS(Html::escapeHTML($targets->avatarUrl($u, $target->size(), $target->rating()))) . '" alt="" />' .
         "');});" .
         "\n//]]>\n" .
         "</script>\n";

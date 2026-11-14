@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\noodles\Target;
 
 use Dotclear\App;
+use Dotclear\Helper\Html\Html;
 use Dotclear\Database\MetaRecord;
 use Dotclear\Plugin\noodles\Image;
 use Dotclear\Plugin\noodles\My;
@@ -54,8 +55,7 @@ class Other
 
         echo
         '<img class="noodles-posts" style="width:' . $target->size() . 'px;height:' . $target->size() . 'px;' . $target->css() . '"' .
-        'src="http://www.gravatar.com/avatar/' . md5($m) .
-        '?s=' . $target->size() . '&amp;r=' . $target->rating() . '&amp;d=' . ($targets->local ? urlencode((string) Image::getUrl()) : '') . '" alt="" />';
+        ' src="' . Html::escapeHTML($targets->avatarUrl($m, $target->size(), $target->rating())) . '" alt="" />';
     }
 
     public static function publicComments(Target $target): void
@@ -93,7 +93,6 @@ class Other
 
         echo
         '<img class="noodles-comments" style="width:' . $target->size() . 'px;height:' . $target->size() . 'px;' . $target->css() . '"' .
-        'src="http://www.gravatar.com/avatar/' . md5($m) .
-        '?s=' . $target->size() . '&amp;r=' . $target->rating() . '&amp;d=' . ($targets->local ? urlencode((string) Image::getUrl()) : '') . '" alt="" />';
+        ' src="' . Html::escapeHTML($targets->avatarUrl($m, $target->size(), $target->rating())) . '" alt="" />';
     }
 }
