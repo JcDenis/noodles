@@ -30,8 +30,9 @@ class Image
     {
         if (!App::blog()->isDefined() || !App::url()->getBase('noodles_file')) {
             return [
-                'theme'  => ['dir' => null, 'url' => null],
-                'public' => ['dir' => null, 'url' => null],
+                'theme'      => ['dir' => null, 'url' => null],
+                'public_img' => ['dir' => null, 'url' => null],
+                'public'     => ['dir' => null, 'url' => null],
                 'module' => ['dir' => null, 'url' => null],
             ];
         }
@@ -46,14 +47,22 @@ class Image
         $theme = App::blog()->settings()->get('system')->get('theme');
         $theme = is_string($theme) ? $theme : '';
 
+        // URLs can be relative to the blog host or absolute
+        $url        = self::absoluteUrl($url);
+        $public_url = self::absoluteUrl($public_url);
+
         return [
             'theme' => [
-                'dir' => Path::real(App::blog()->themesPath() . '/' . $theme. '/img') . '/' . My::IMAGE,
-                'url' => $url . $theme . '/img/' . My::IMAGE,
+                'dir' => Path::real(App::blog()->themesPath() . '/' . $theme . '/img') . '/' . My::IMAGE,
+                'url' => $url . '/' . $theme . '/img/' . My::IMAGE,
+            ],
+            'public_img' => [
+                'dir' => Path::real(App::blog()->publicPath()) . '/img/' . My::IMAGE,
+                'url' => $public_url . '/img/' . My::IMAGE,
             ],
             'public' => [
                 'dir' => Path::real(App::blog()->publicPath()) . '/' . My::IMAGE,
-                'url' => App::blog()->host() . Path::clean($public_url) . '/' . My::IMAGE,
+                'url' => $public_url . '/' . My::IMAGE,
             ],
             'module' => [
                 'dir' => Path::real(My::path() . '/default-templates/img') . '/' . My::IMAGE,
@@ -90,5 +99,15 @@ class Image
         }
 
         return null;
+    }
+
+    /**
+     * Get absolute URL without trailing slash.
+     */
+    private static function absoluteUrl(string $url): string
+    {
+        $url = rtrim($url, '/');
+
+        return preg_match('#^[a-z][a-z0-9+.-]*://#i', $url) ? $url : rtrim(App::blog()->host(), '/') . '/' . ltrim($url, '/');
     }
 }
