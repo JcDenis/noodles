@@ -205,6 +205,8 @@ class Manage
             ->render() . '
         </form>';
 
+        Page::helpBlock(My::id() . '-index');
+
         Page::closeModule();
     }
 }
